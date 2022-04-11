@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: e49920d7680662c47a4fbd831f6b1bb9
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - Hexagon: {fileID: 846162803021213923, guid: 12156c7afb422b24285cbbaeb13bac5a, type: 3}
+  - gridHolder: {fileID: 3723326904011818287, guid: 986e9b7dd1d920948863da8bd3333d9c, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
