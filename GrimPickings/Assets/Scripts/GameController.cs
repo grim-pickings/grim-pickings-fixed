@@ -4,15 +4,22 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
+using Leap;
+using Leap.Unity;
 
 public class GameController : MonoBehaviour
 {
-    [SerializeField] private Image backgroundShader;
+    [SerializeField] private LeapServiceProvider leapController;
+    [SerializeField] private UnityEngine.UI.Image backgroundShader;
     [SerializeField] private TMP_Text TurnText;
     [SerializeField] private GameObject gridHolder, dice, canvasRotator, cardController;
     [SerializeField] private Camera cameraMain;
     [HideInInspector] public Vector3 camPosMain;
     [HideInInspector] public Color movementColor = new Color(1f, 1f, 1f, 0.5f);
+
+    // controls checking for hand dice roll motion and the motion steps for it.
+    private bool checkForHandRoll = false;
+    private bool checkForHandRollMoveOne = false;
 
     public List<GameObject> rangeHexes = new List<GameObject>();
     public GameObject currentPlayer, player1, player2, rollButton;
@@ -28,7 +35,7 @@ public class GameController : MonoBehaviour
     }
 
     //This uses a raycast from the camera to the mouse pointers position to determine where it is clicking. If it is clicking a tile that is
-    //lit up with the movement color then the playe rmoves to that tile and it starts the other players turn
+    //lit up with the movement color then the player moves to that tile and it starts the other players turn
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
@@ -39,6 +46,14 @@ public class GameController : MonoBehaviour
             {
                 StartCoroutine(movement(hit.collider.gameObject));
             }
+        }
+
+        // if a leap service provider is connected and there is at least one hand being tracked, check for these conditions.
+        if (leapController && leapController.CurrentFrame.Hands.Count > 0)
+        {
+            Hand hand = leapController.CurrentFrame.Hands[0];
+            // put a try catch and get a reference to a second hand?
+            HandDiceRoll(hand);
         }
     }
 
@@ -97,7 +112,11 @@ public class GameController : MonoBehaviour
             TurnText.color = new Color(1f, 1f, 1f, a + 0.215f);
             yield return new WaitForSeconds(0.0025f);
         }
+
+        // check for button click or hand motion.
         rollButton.SetActive(true);
+        checkForHandRoll = true;
+
         while (diceRolled == false)
         {
             yield return null;
@@ -119,6 +138,47 @@ public class GameController : MonoBehaviour
     public void RollDice()
     {
         diceRolled = true;
+    }
+
+    public void HandDiceRoll(Hand hand)
+    {
+        // don't check when not waiting for a hand roll.
+        if (!checkForHandRoll) return;
+
+        // get fingers.
+        Finger thumb = hand.Fingers[0];
+        Finger index = hand.Fingers[1];
+        Finger middle = hand.Fingers[2];
+        Finger ring = hand.Fingers[3];
+        Finger pinky = hand.Fingers[4];
+
+        if (!thumb.IsExtended
+            && !index.IsExtended
+            && !middle.IsExtended
+            && !ring.IsExtended
+            && !pinky.IsExtended
+            && !checkForHandRollMoveOne
+        )
+        {
+            // put some visual indicator for these steps?
+            Debug.Log("hand is closed");
+            // hand is closed.
+            checkForHandRollMoveOne = true;
+        }
+        if (thumb.IsExtended
+            && index.IsExtended
+            && middle.IsExtended
+            && ring.IsExtended
+            && pinky.IsExtended
+            && checkForHandRollMoveOne
+        )
+        {
+            Debug.Log("hand is opened, dice rolled");
+            // hand is opened, dice is rolled.
+            checkForHandRollMoveOne = false;
+            checkForHandRoll = false;
+            diceRolled = true;
+        }
     }
 
     //Coroutine that places all the gravesites one by one at the beginning of the game
