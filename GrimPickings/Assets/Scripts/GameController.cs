@@ -139,6 +139,7 @@ public class GameController : MonoBehaviour
     public void RollDice()
     {
         diceRolled = true;
+        checkForHandRoll = false;
     }
 
     public void HandDiceRoll(Hand hand)
