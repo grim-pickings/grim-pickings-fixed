@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class TimeLeft : MonoBehaviour
 {
@@ -14,15 +15,15 @@ public class TimeLeft : MonoBehaviour
         startText.text = (timeLeft).ToString("0");
         if (timeLeft <= 0)
         {
-            GameOver();
+            SceneSwitch();
             timeLeft = 0;
 
         }
     }
 
-    public void GameOver()
+    public void SceneSwitch()
     {
-        Debug.Log("Game Over");
-        Application.Quit();
+        Debug.Log("Changing scene to combat phase");
+        SceneManager.LoadScene("CombatPhase");
     }
 }
