@@ -10,6 +10,8 @@ public class CardController : MonoBehaviour
     private bool equip = false;
     public bool collect = false;
     private int currentPart = 0;
+    [SerializeField] private PlayerMenu p1Menu;
+    [SerializeField] private PlayerMenu p2Menu;
 
     //Coroutine that is called from the game controller if the tile moved too is a dig site
     public IEnumerator digging(string graveType)
@@ -43,7 +45,17 @@ public class CardController : MonoBehaviour
             cardUI.transform.localPosition = new Vector3(-800, 0, 0);
             collect = false;
             int i = Random.Range(0, cardDeck.Count);
-            if (cardDeck[i].curse != "None") {
+            if (GameController.GetComponent<GameController>().currentPlayerNum == 1)
+            {
+
+                p1Menu.AddCard(cardDeck[i], "Stored");
+            }
+            else
+            {
+                p2Menu.AddCard(cardDeck[i], "Stored");
+            }
+            if (cardDeck[i].curse != "None")
+            {
                 anim = cardUI.GetComponent<Animator>();
                 GameObject cardFront = cardUI.transform.GetChild(0).gameObject;
                 cardFront.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = cardDeck[i].name;
@@ -61,7 +73,8 @@ public class CardController : MonoBehaviour
                 cardFront.transform.GetChild(8).GetComponent<TextMeshProUGUI>().text = cardDeck[i].curse;
                 cardFront.transform.GetChild(9).GetComponent<Image>().sprite = cardDeck[i].img;
             }
-            else {
+            else
+            {
                 anim = cardUINoCurse.GetComponent<Animator>();
                 GameObject cardFront = cardUINoCurse.transform.GetChild(0).gameObject;
                 cardFront.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = cardDeck[i].name;
@@ -79,7 +92,7 @@ public class CardController : MonoBehaviour
                 cardFront.transform.GetChild(8).GetComponent<Image>().sprite = cardDeck[i].img;
             }
             anim.SetBool("drawing", true);
-            
+
             cardDeck.Remove(cardDeck[i]);
             count++;
             while (Input.GetMouseButtonDown(0) == false)
@@ -98,15 +111,15 @@ public class CardController : MonoBehaviour
 
         //long and conveluted variables being called from other places that starts the next players turn. This will be gone soon
         GameController.GetComponent<GameController>().currentPlayer.GetComponent<PlayerMovement>().FindTile();
-        if (GameController.GetComponent<GameController>().currentPlayer == GameController.GetComponent<GameController>().player1) 
-        { 
-            GameController.GetComponent<GameController>().currentPlayer = GameController.GetComponent<GameController>().player2; 
-            StartCoroutine(GameController.GetComponent<GameController>().TurnStart(2)); 
+        if (GameController.GetComponent<GameController>().currentPlayer == GameController.GetComponent<GameController>().player1)
+        {
+            GameController.GetComponent<GameController>().currentPlayer = GameController.GetComponent<GameController>().player2;
+            StartCoroutine(GameController.GetComponent<GameController>().TurnStart(2));
         }
-        else 
-        { 
-            GameController.GetComponent<GameController>().currentPlayer = GameController.GetComponent<GameController>().player1; 
-            StartCoroutine(GameController.GetComponent<GameController>().TurnStart(1)); 
+        else
+        {
+            GameController.GetComponent<GameController>().currentPlayer = GameController.GetComponent<GameController>().player1;
+            StartCoroutine(GameController.GetComponent<GameController>().TurnStart(1));
         }
     }
 }

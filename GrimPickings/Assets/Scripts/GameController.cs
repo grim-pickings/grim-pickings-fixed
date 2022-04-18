@@ -25,6 +25,7 @@ public class GameController : MonoBehaviour
     public GameObject currentPlayer, player1, player2, rollButton;
     private bool diceRolled = false;
     public int numMounds, numGraves, numMausoleums;
+    public int currentPlayerNum = 1;
 
     //Start the game with player 1 rolling to move
     void Start()
@@ -85,7 +86,7 @@ public class GameController : MonoBehaviour
             }
 
             cameraMain.transform.position = Vector3.Lerp(cameraMain.transform.position, new Vector3(currentPlayer.transform.position.x, currentPlayer.transform.position.y, -5), t);
-            if(cameraMain.transform.position.z > -5.01f)
+            if (cameraMain.transform.position.z > -5.01f)
             {
                 break;
             }
@@ -187,7 +188,7 @@ public class GameController : MonoBehaviour
         int i = 0;
         float interval = 0.05f;
         //Number of mounds
-        while(i <= numMounds)
+        while (i <= numMounds)
         {
             int site = Random.Range(0, gridHolder.transform.childCount);
             if (gridHolder.transform.GetChild(site).GetComponent<HexScript>().nearHexes.Count < 5)
@@ -195,7 +196,7 @@ public class GameController : MonoBehaviour
                 continue;
             }
             bool alreadyAssigned = false;
-            for(int j = 0; j < gridHolder.transform.GetChild(site).GetComponent<HexScript>().nearHexes.Count; j++)
+            for (int j = 0; j < gridHolder.transform.GetChild(site).GetComponent<HexScript>().nearHexes.Count; j++)
             {
                 List<ArrayList> hexList = gridHolder.transform.GetChild(site).GetComponent<HexScript>().nearHexes;
                 GameObject hex = (GameObject)hexList[j][0];
@@ -204,7 +205,7 @@ public class GameController : MonoBehaviour
                     alreadyAssigned = true;
                 }
             }
-            if(alreadyAssigned == true)
+            if (alreadyAssigned == true)
             {
                 continue;
             }
@@ -316,14 +317,14 @@ public class GameController : MonoBehaviour
         string tileType = destination.transform.parent.GetComponent<HexScript>().type;
 
         //Breaks coroutine if they land on a gravesite
-        if(tileType == "Mound" || tileType == "Grave" || tileType == "Mausoleum")
+        if (tileType == "Mound" || tileType == "Grave" || tileType == "Mausoleum")
         {
             StartCoroutine(cardController.GetComponent<CardController>().digging(tileType));
             yield break;
         }
 
         currentPlayer.GetComponent<PlayerMovement>().FindTile();
-        if (currentPlayer == player1) { currentPlayer = player2; StartCoroutine(TurnStart(2)); }
-        else { currentPlayer = player1; StartCoroutine(TurnStart(1)); }
+        if (currentPlayer == player1) { currentPlayer = player2; currentPlayerNum = 2; StartCoroutine(TurnStart(2)); }
+        else { currentPlayer = player1; currentPlayerNum = 1; StartCoroutine(TurnStart(1)); }
     }
 }

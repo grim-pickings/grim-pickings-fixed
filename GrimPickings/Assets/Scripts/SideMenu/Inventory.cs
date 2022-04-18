@@ -8,6 +8,8 @@ public class Inventory : MonoBehaviour
     private List<Deck.Card> cardsInStock = new List<Deck.Card>();
     [SerializeField] private Sprite defaultSprite;
     [SerializeField] private int cardSpacing = 50;
+    [SerializeField] private float handOffsetY = 540f;
+    [SerializeField] private float handOffsetX = 150f;
 
     private List<GameObject> cardObjects = new List<GameObject>();
 
@@ -60,10 +62,9 @@ public class Inventory : MonoBehaviour
             Deck.Card currentCard = cardsInStock[i];
             cardObjects.Add(Instantiate(
                 cardTemplate,
-                new Vector3(960, 540 - (cardSpacing * i), 0),
-                Quaternion.identity,
                 this.gameObject.transform
             ));
+            cardObjects[i].gameObject.transform.position = new Vector3(150f, 540f + cardSpacing * i, 0);
             cardObjects[i].GetComponent<InventoryCard>().SetCardRef(currentCard);
         }
     }

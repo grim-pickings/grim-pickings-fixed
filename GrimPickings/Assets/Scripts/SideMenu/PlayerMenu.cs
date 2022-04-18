@@ -7,12 +7,26 @@ public class PlayerMenu : MonoBehaviour
 {
     // reference to the player's actual menu
     [SerializeField] private GameObject menu;
+    [SerializeField] private Inventory storedInventory;
+    [SerializeField] private Inventory otherInventory;
 
     // toggle menu open/close
     public void toggleMenu()
     {
         // changes whether it's active based on it's current state
         menu.SetActive(!menu.activeSelf);
+    }
+
+    public void AddCard(Deck.Card newCard, string inventory)
+    {
+        if (inventory == "Stored" || inventory == "stored")
+        {
+            storedInventory.AddToInventory(newCard);
+        }
+        else
+        {
+            otherInventory.AddToInventory(newCard);
+        }
     }
 
 }
