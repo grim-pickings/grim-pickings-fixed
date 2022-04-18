@@ -18,6 +18,7 @@ public class CardController : MonoBehaviour
     [SerializeField] private LeapServiceProvider leapController;
     private bool handPullMotion = false;
     private bool checkForHandMotion = false;
+    private bool checkForMotionOne = false;
 
     void Update()
     {
@@ -156,11 +157,22 @@ public class CardController : MonoBehaviour
         Finger ring = hand.Fingers[3];
         Finger pinky = hand.Fingers[4];
 
+        // check for open hand first (except for thumb).
+        if (index.IsExtended
+            && middle.IsExtended
+            && ring.IsExtended
+            && pinky.IsExtended
+        )
+        {
+            checkForMotionOne = true;
+        }
+
         // when all fingers except for the thumb are closed. thumb position does not matter.
         if (!index.IsExtended
             && !middle.IsExtended
             && !ring.IsExtended
             && !pinky.IsExtended
+            && checkForMotionOne
         )
         {
             Debug.Log("hand pull motion called.");
@@ -168,6 +180,7 @@ public class CardController : MonoBehaviour
             handPullMotion = true;
             // stop checking for hand motion after card is pulled towards player.
             checkForHandMotion = false;
+            checkForMotionOne = false;
         }
     }
 }
