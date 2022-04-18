@@ -25,7 +25,6 @@ public class GameController : MonoBehaviour
     public GameObject currentPlayer, player1, player2, rollButton;
     private bool diceRolled = false;
     public int numMounds, numGraves, numMausoleums;
-    public int currentPlayerNum = 1;
 
     //Start the game with player 1 rolling to move
     void Start()
@@ -324,7 +323,7 @@ public class GameController : MonoBehaviour
         }
 
         currentPlayer.GetComponent<PlayerMovement>().FindTile();
-        if (currentPlayer == player1) { currentPlayer = player2; currentPlayerNum = 2; StartCoroutine(TurnStart(2)); }
-        else { currentPlayer = player1; currentPlayerNum = 1; StartCoroutine(TurnStart(1)); }
+        if (currentPlayer == player1) { currentPlayer = player2; StartCoroutine(TurnStart(2)); }
+        else { currentPlayer = player1; StartCoroutine(TurnStart(1)); }
     }
 }
