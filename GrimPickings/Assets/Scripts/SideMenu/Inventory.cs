@@ -22,9 +22,9 @@ public class Inventory : MonoBehaviour
 
     public void Start()
     {
-        AddTestCard();
-        AddTestCard();
-        AddTestCard();
+        // AddTestCard();
+        // AddTestCard();
+        // AddTestCard();
     }
 
     public void AddTestCard()
@@ -64,7 +64,7 @@ public class Inventory : MonoBehaviour
                 cardTemplate,
                 this.gameObject.transform
             ));
-            cardObjects[i].gameObject.transform.position = new Vector3(handOffsetX, handOffsetY + cardSpacing * i, 0);
+            cardObjects[i].gameObject.transform.position = new Vector3(150f, 540f + cardSpacing * i, 0);
             cardObjects[i].GetComponent<InventoryCard>().SetCardRef(currentCard);
         }
     }

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Leap;
+using Leap.Unity;
 
 public class CardController : MonoBehaviour
 {
@@ -12,7 +14,21 @@ public class CardController : MonoBehaviour
     private int currentPart = 0;
     [SerializeField] private PlayerMenu p1Menu;
     [SerializeField] private PlayerMenu p2Menu;
-    [SerializeField] private int currentPlayerNum = 1;
+
+    [SerializeField] private LeapServiceProvider leapController;
+    private bool handPullMotion = false;
+    private bool checkForHandMotion = false;
+    private bool checkForMotionOne = false;
+
+    void Update()
+    {
+        // if a leap service provider is connected and there is at least one hand being tracked, check for these conditions.
+        if (leapController && leapController.CurrentFrame.Hands.Count > 0)
+        {
+            Hand hand = leapController.CurrentFrame.Hands[0];
+            HandCardPull(hand);
+        }
+    }
 
     //Coroutine that is called from the game controller if the tile moved too is a dig site
     public IEnumerator digging(string graveType)
@@ -46,16 +62,15 @@ public class CardController : MonoBehaviour
             cardUI.transform.localPosition = new Vector3(-800, 0, 0);
             collect = false;
             int i = Random.Range(0, cardDeck.Count);
-
-            if (currentPlayerNum == 1)
+            if (GameController.GetComponent<GameController>().currentPlayerNum == 1)
             {
+
                 p1Menu.AddCard(cardDeck[i], "Stored");
             }
             else
             {
                 p2Menu.AddCard(cardDeck[i], "Stored");
             }
-
             if (cardDeck[i].curse != "None")
             {
                 anim = cardUI.GetComponent<Animator>();
@@ -73,7 +88,7 @@ public class CardController : MonoBehaviour
                 cardFront.transform.GetChild(6).GetComponent<TextMeshProUGUI>().text = cardDeck[i].gatherAbility;
                 cardFront.transform.GetChild(7).GetComponent<TextMeshProUGUI>().text = cardDeck[i].attackAbility;
                 cardFront.transform.GetChild(8).GetComponent<TextMeshProUGUI>().text = cardDeck[i].curse;
-                cardFront.transform.GetChild(9).GetComponent<Image>().sprite = cardDeck[i].img;
+                cardFront.transform.GetChild(9).GetComponent<UnityEngine.UI.Image>().sprite = cardDeck[i].img;
             }
             else
             {
@@ -91,17 +106,22 @@ public class CardController : MonoBehaviour
                 else { cardFront.transform.GetChild(5).transform.GetChild(5).GetComponent<TextMeshProUGUI>().text = cardDeck[i].speed.ToString(); }
                 cardFront.transform.GetChild(6).GetComponent<TextMeshProUGUI>().text = cardDeck[i].gatherAbility;
                 cardFront.transform.GetChild(7).GetComponent<TextMeshProUGUI>().text = cardDeck[i].attackAbility;
-                cardFront.transform.GetChild(8).GetComponent<Image>().sprite = cardDeck[i].img;
+                cardFront.transform.GetChild(8).GetComponent<UnityEngine.UI.Image>().sprite = cardDeck[i].img;
             }
             anim.SetBool("drawing", true);
 
             cardDeck.Remove(cardDeck[i]);
             count++;
-            while (Input.GetMouseButtonDown(0) == false)
+            // start checking for hand motion.
+            checkForHandMotion = true;
+            Debug.Log("checking for hand motion");
+            while (Input.GetMouseButtonDown(0) == false && handPullMotion == false)
             {
                 yield return null;
             }
             anim.SetBool("drawing", false);
+            // reset hand motion detection.
+            handPullMotion = false;
             //collect is called when the card animation for stashing in the inventory is done
             while (collect == false)
             {
@@ -123,6 +143,44 @@ public class CardController : MonoBehaviour
             GameController.GetComponent<GameController>().currentPlayer = GameController.GetComponent<GameController>().player1;
             StartCoroutine(GameController.GetComponent<GameController>().TurnStart(1));
         }
-        currentPlayerNum = currentPlayerNum == 1 ? 2 : 1;
+    }
+
+    public void HandCardPull(Hand hand)
+    {
+        // don't check when not waiting for hand motion.
+        if (!checkForHandMotion) return;
+
+        // get fingers.
+        Finger thumb = hand.Fingers[0];
+        Finger index = hand.Fingers[1];
+        Finger middle = hand.Fingers[2];
+        Finger ring = hand.Fingers[3];
+        Finger pinky = hand.Fingers[4];
+
+        // check for open hand first (except for thumb).
+        if (index.IsExtended
+            && middle.IsExtended
+            && ring.IsExtended
+            && pinky.IsExtended
+        )
+        {
+            checkForMotionOne = true;
+        }
+
+        // when all fingers except for the thumb are closed. thumb position does not matter.
+        if (!index.IsExtended
+            && !middle.IsExtended
+            && !ring.IsExtended
+            && !pinky.IsExtended
+            && checkForMotionOne
+        )
+        {
+            Debug.Log("hand pull motion called.");
+            // hand is closed.
+            handPullMotion = true;
+            // stop checking for hand motion after card is pulled towards player.
+            checkForHandMotion = false;
+            checkForMotionOne = false;
+        }
     }
 }
