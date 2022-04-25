@@ -143,6 +143,11 @@ public class GameController : MonoBehaviour
         {
             yield return null;
         }
+        // stop checking for hand motion. 
+        checkForHandRoll = false;
+        // reset hand motion steps if interrupted.
+        checkForHandRollMoveOne = false;
+        checkForHandRoll = false;
         rollButton.SetActive(false);
         dice.GetComponent<DiceScript>().DiceRoll(8, "move");
         diceRolled = false;

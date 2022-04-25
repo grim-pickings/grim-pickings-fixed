@@ -121,10 +121,11 @@ public class CardController : MonoBehaviour
                 yield return null;
             }
             anim.SetBool("drawing", false);
-            // reset hand motion detection.
-            handPullMotion = false;
             // stop checking for hand motion when button is clicked or hand motion is done.
             checkForHandMotion = false;
+            // reset hand motion detection.
+            handPullMotion = false;
+            checkForMotionOne = false;
             //collect is called when the card animation for stashing in the inventory is done
             while (collect == false)
             {
