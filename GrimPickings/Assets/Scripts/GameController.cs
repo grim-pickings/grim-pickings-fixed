@@ -78,7 +78,7 @@ public class GameController : MonoBehaviour
     //implement a way to end turns by running the TurnStart coroutine five times for demo?
     public IEnumerator TurnEndDemo()
     {
-        //add turnstart coroutine five times to make five terms for demo
+        //add turnstart coroutine five times to make five turns for demo
         yield return new WaitForSeconds(1.0f);
         Debug.Log("turn end");
     }
@@ -86,7 +86,7 @@ public class GameController : MonoBehaviour
     //implement a way to end turns by running the TurnStart coroutine five times for regular version?
     public IEnumerator TurnEndRegular()
     {
-        //add turnstart coroutine ten times to make five terms for regular version
+        //add turnstart coroutine ten times to make ten turns for regular version
         yield return new WaitForSeconds(1.0f);
         Debug.Log("turn end");
     }
