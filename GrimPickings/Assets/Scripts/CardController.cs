@@ -63,7 +63,7 @@ public class CardController : MonoBehaviour
             collect = false;
             int i = Random.Range(0, cardDeck.Count);
 
-            if (GameController.gameObject.GetComponent<GameController>() == 1)
+            if (GameController.gameObject.GetComponent<GameController>().currentPlayerNum == 1)
             {
                 p1Menu.AddCard(cardDeck[i], "Stored");
             }
