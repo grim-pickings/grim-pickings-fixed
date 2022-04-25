@@ -16,7 +16,14 @@ public class HexScript : MonoBehaviour
     //This script starts by findign all the hexes near it to make an array of 6 or less hexes (depending on where it is positioned)
     void Awake()
     {
-        movementColor = controller.GetComponent<GameController>().movementColor;
+        if(controller.GetComponent<GameController>() != null)
+        {
+            movementColor = controller.GetComponent<GameController>().movementColor;
+        }
+        else if (controller.GetComponent<GameControllerCombat>() != null)
+        {
+            movementColor = controller.GetComponent<GameControllerCombat>().movementColor;
+        }
         nearHexes = new List<ArrayList>();
         for (int i = 0; i < gridHolder.transform.childCount; i++)
         {
@@ -47,7 +54,7 @@ public class HexScript : MonoBehaviour
             }
         }
 
-        if (this.transform.name == "Hex (" + (gridHolder.transform.childCount / 2) + ")")
+        if (this.transform.name == "Hex (" + (gridHolder.transform.childCount / 2) + ")" && controller.GetComponent<GameController>() != null)
         {
             CenterHex();
         }
@@ -82,9 +89,19 @@ public class HexScript : MonoBehaviour
                 {
                     ((GameObject)nearHexes[i][0]).transform.GetChild(((GameObject)nearHexes[i][0]).transform.childCount - 1).GetComponent<SpriteRenderer>().color = movementColor;
                     ((GameObject)nearHexes[i][0]).GetComponent<HexScript>().MovementUpdate(movement - 1, player, false, ((int)nearHexes[i][1]));
-                    if (!(controller.GetComponent<GameController>().rangeHexes.Contains((GameObject)nearHexes[i][0])))
+                    if (controller.GetComponent<GameController>() != null)
                     {
-                        controller.GetComponent<GameController>().rangeHexes.Add((GameObject)nearHexes[i][0]);
+                        if (!(controller.GetComponent<GameController>().rangeHexes.Contains((GameObject)nearHexes[i][0])))
+                        {
+                            controller.GetComponent<GameController>().rangeHexes.Add((GameObject)nearHexes[i][0]);
+                        }
+                    }
+                    if (controller.GetComponent<GameControllerCombat>() != null)
+                    {
+                        if (!(controller.GetComponent<GameControllerCombat>().rangeHexes.Contains((GameObject)nearHexes[i][0])))
+                        {
+                            controller.GetComponent<GameControllerCombat>().rangeHexes.Add((GameObject)nearHexes[i][0]);
+                        }
                     }
                 }
             }

@@ -69,6 +69,13 @@ public class DiceScript : MonoBehaviour
             diceText.color = new Color(1f, 1f, 1f, a);
             yield return new WaitForSeconds(0.0025f);
         }
-        controller.GetComponent<GameController>().RollResult(num, type);
+        if (controller.GetComponent<GameController>() != null)
+        {
+            controller.GetComponent<GameController>().RollResult(num, type);
+        }
+        else if (controller.GetComponent<GameControllerCombat>() != null)
+        {
+            controller.GetComponent<GameControllerCombat>().RollResult(num, type);
+        }
     }
 }
