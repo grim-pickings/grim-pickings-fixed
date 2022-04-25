@@ -75,6 +75,18 @@ public class GameController : MonoBehaviour
         }
     }
 
+    //implement a way to end turns by running the TurnStart coroutine five times for demo?
+    public IEnumerator TurnEndDemo()
+    {
+        //add turnstart coroutine five times to make five terms for demo
+    }
+
+    //implement a way to end turns by running the TurnStart coroutine five times for regular version?
+    public IEnumerator TurnEndRegular()
+    {
+        //add turnstart coroutine ten times to make five terms for regular version
+    }
+
     //Coroutine that controls everything that happnes at the begining of the turn with rolling for movement and displaying whose turn it is
     public IEnumerator TurnStart(int playerNum)
     {
