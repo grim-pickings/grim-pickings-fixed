@@ -18,9 +18,9 @@ public class TurnController : MonoBehaviour
     {
         turnLimit = GameObject.FindGameObjectsWithTag("TURN");
 
-        if (turnLimit[number])
-        {
-            Debug.Log("End turn");
-        }
+        //if (turnLimit[number])
+        //{
+        //    Debug.Log("End turn");
+        //}
     }
 }
