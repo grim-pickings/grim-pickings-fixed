@@ -181,6 +181,44 @@ public class GameController : MonoBehaviour
         }
     }
 
+    public void HandFingerGun(Hand hand)
+    {
+        // don't check when not waiting for a hand roll.
+        if (!checkForHandRoll) return;
+
+        // get fingers.
+        Finger thumb = hand.Fingers[0];
+        Finger index = hand.Fingers[1];
+        Finger middle = hand.Fingers[2];
+        Finger ring = hand.Fingers[3];
+        Finger pinky = hand.Fingers[4];
+
+        if (!thumb.IsExtended
+            && !index.IsExtended
+            && !middle.IsExtended
+            && !ring.IsExtended
+            && !pinky.IsExtended
+            && !checkForHandRollMoveOne
+        )
+        {
+            // put some visual indicator for these steps?
+            Debug.Log("hand is closed");
+            // hand is closed.
+            checkForHandRollMoveOne = true;
+        }
+        if (thumb.IsExtended
+            && index.IsExtended
+            && middle.IsExtended
+        )
+        {
+            Debug.Log("finger guns");
+            // hand is opened, dice is rolled.
+            checkForHandRollMoveOne = false;
+            checkForHandRoll = false;
+            diceRolled = true;
+        }
+    }
+
     //Coroutine that places all the gravesites one by one at the beginning of the game
     IEnumerator PlaceDigsites()
     {
