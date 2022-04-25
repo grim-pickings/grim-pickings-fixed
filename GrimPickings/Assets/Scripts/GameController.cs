@@ -25,6 +25,8 @@ public class GameController : MonoBehaviour
     public GameObject currentPlayer, player1, player2, rollButton;
     private bool diceRolled = false;
     public int numMounds, numGraves, numMausoleums;
+    [SerializeField] private int numTurnsDemo;
+    [SerializeField] private int numTurnsRegular;
 
     public int currentPlayerNum = 1;
 
