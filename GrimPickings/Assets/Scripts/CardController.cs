@@ -14,7 +14,6 @@ public class CardController : MonoBehaviour
     private int currentPart = 0;
     [SerializeField] private PlayerMenu p1Menu;
     [SerializeField] private PlayerMenu p2Menu;
-    [SerializeField] private int currentPlayerNum = 1;
 
     [SerializeField] private LeapServiceProvider leapController;
     private bool handPullMotion = false;
@@ -64,7 +63,7 @@ public class CardController : MonoBehaviour
             collect = false;
             int i = Random.Range(0, cardDeck.Count);
 
-            if (currentPlayerNum == 1)
+            if (GameController.gameObject.GetComponent<GameController>() == 1)
             {
                 p1Menu.AddCard(cardDeck[i], "Stored");
             }
@@ -147,7 +146,6 @@ public class CardController : MonoBehaviour
             GameController.GetComponent<GameController>().currentPlayer = GameController.GetComponent<GameController>().player1;
             StartCoroutine(GameController.GetComponent<GameController>().TurnStart(1));
         }
-        currentPlayerNum = currentPlayerNum == 1 ? 2 : 1;
     }
 
     public void HandCardPull(Hand hand)

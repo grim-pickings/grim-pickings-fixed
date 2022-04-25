@@ -13,6 +13,8 @@ public class Inventory : MonoBehaviour
 
     private List<GameObject> cardObjects = new List<GameObject>();
 
+    private int lastInventoryCount = 0;
+
     // Adds card to inventory to be rendered
     public void AddToInventory(Deck.Card newCard)
     {
@@ -22,9 +24,9 @@ public class Inventory : MonoBehaviour
 
     public void Start()
     {
-        AddTestCard();
-        AddTestCard();
-        AddTestCard();
+        // AddTestCard();
+        // AddTestCard();
+        // AddTestCard();
     }
 
     public void AddTestCard()
@@ -50,6 +52,11 @@ public class Inventory : MonoBehaviour
 
     private void UpdateInventory()
     {
+        if (cardObjects.Count == 0 || lastInventoryCount == cardObjects.Count)
+        {
+            return;
+        }
+        lastInventoryCount = cardObjects.Count;
         // Clean up old card objects
         cardObjects.ForEach(delegate (GameObject cardObj)
         {
@@ -71,6 +78,7 @@ public class Inventory : MonoBehaviour
 
     private void Update()
     {
+        UpdateInventory();
         // Debug.Log(cardsInStock.Count);
     }
 }

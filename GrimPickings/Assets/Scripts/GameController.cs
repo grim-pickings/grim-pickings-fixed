@@ -26,6 +26,8 @@ public class GameController : MonoBehaviour
     private bool diceRolled = false;
     public int numMounds, numGraves, numMausoleums;
 
+    public int currentPlayerNum = 1;
+
     //Start the game with player 1 rolling to move
     void Start()
     {
@@ -74,6 +76,8 @@ public class GameController : MonoBehaviour
     //Coroutine that controls everything that happnes at the begining of the turn with rolling for movement and displaying whose turn it is
     public IEnumerator TurnStart(int playerNum)
     {
+        currentPlayerNum = currentPlayerNum == 1 ? 2 : 1;
+
         float t = 0f;
         while (t < 1)
         {
