@@ -14,6 +14,9 @@ public class HandViewTransformController : MonoBehaviour
     [SerializeField] private RectTransform rightAnchor;
     private RectTransform rectTransform;
 
+    // sliding animation speed when hand changes side. higher value goes faster.
+    [SerializeField] private float slideLerpSpeed = 10;
+
     // reference to first hand being tracked in frame.
     private int firstHandID;
 
@@ -54,17 +57,19 @@ public class HandViewTransformController : MonoBehaviour
 
     private void SetHandViewTransform(Hand hand)
     {
+        // if it's a left hand, slide to the left side. otherwise, go to the right.
+        // (if we want to remove the lerp then only keep the 2nd arg).
         if (hand.IsLeft)
         {
-            rectTransform.anchorMax = leftAnchor.anchorMax;
-            rectTransform.anchorMin = leftAnchor.anchorMin;
-            rectTransform.pivot = leftAnchor.pivot;
+            rectTransform.anchorMax = Vector2.Lerp(rectTransform.anchorMax, leftAnchor.anchorMax, Time.deltaTime * slideLerpSpeed);
+            rectTransform.anchorMin = Vector2.Lerp(rectTransform.anchorMin, leftAnchor.anchorMin, Time.deltaTime * slideLerpSpeed);
+            rectTransform.pivot = Vector2.Lerp(rectTransform.pivot, leftAnchor.pivot, Time.deltaTime * slideLerpSpeed);
         } 
         else
         {
-            rectTransform.anchorMax = rightAnchor.anchorMax;
-            rectTransform.anchorMin = rightAnchor.anchorMin;
-            rectTransform.pivot = rightAnchor.pivot;
+            rectTransform.anchorMax = Vector2.Lerp(rectTransform.anchorMax, rightAnchor.anchorMax, Time.deltaTime * slideLerpSpeed);
+            rectTransform.anchorMin = Vector2.Lerp(rectTransform.anchorMin, rightAnchor.anchorMin, Time.deltaTime * slideLerpSpeed);
+            rectTransform.pivot = Vector2.Lerp(rectTransform.pivot, rightAnchor.pivot, Time.deltaTime * slideLerpSpeed);
         }
     }
 }
