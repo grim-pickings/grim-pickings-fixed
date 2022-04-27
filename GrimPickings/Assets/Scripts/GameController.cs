@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -34,6 +35,9 @@ public class GameController : MonoBehaviour
     [SerializeField] private PlayerMenu p1Menu;
     [SerializeField] private PlayerMenu p2Menu;
 
+    // reference to first hand being tracked in frame.
+    private int firstHandID;
+
     //Start the game with player 1 rolling to move
     void Start()
     {
@@ -56,12 +60,33 @@ public class GameController : MonoBehaviour
             }
         }
 
-        // if a leap service provider is connected and there is at least one hand being tracked, check for these conditions.
-        if (leapController && leapController.CurrentFrame.Hands.Count > 0)
+        // having both hands enter at the same time is unlikely but doable and causes and error, so need to try catch this.
+        try
         {
-            Hand hand = leapController.CurrentFrame.Hands[0];
-            // put a try catch and get a reference to a second hand?
-            HandDiceRoll(hand);
+            // if a leap service provider is connected and a hand is being tracked, 
+            // get an ID reference to the first entered tracked hand, check for conditions. 
+            // if two hands are tracked, just watch for conditions on the first entered hand.
+            if (leapController && leapController.CurrentFrame.Hands.Count == 1)
+            {
+                firstHandID = leapController.CurrentFrame.Hands[0].Id;
+                HandDiceRoll(leapController.CurrentFrame.Hand(firstHandID));
+            }
+            else if (leapController && leapController.CurrentFrame.Hands.Count == 2)
+            {
+                HandDiceRoll(leapController.CurrentFrame.Hand(firstHandID));
+            }
+        }
+        // if both hands entered at the same time, just track hand 0. when two hands are being tracked, it's the left hand.
+        catch (Exception e)
+        {
+            if (leapController && leapController.CurrentFrame.Hands.Count > 0)
+            {
+                Hand hand = leapController.CurrentFrame.Hands[0];
+                HandDiceRoll(hand);
+            }
+
+            // get rid of the warning in unity.
+            Debug.Log("Error caught: " + e);
         }
     }
 
@@ -265,7 +290,7 @@ public class GameController : MonoBehaviour
         //Number of mounds
         while (i <= numMounds)
         {
-            int site = Random.Range(0, gridHolder.transform.childCount);
+            int site = UnityEngine.Random.Range(0, gridHolder.transform.childCount);
             if (gridHolder.transform.GetChild(site).GetComponent<HexScript>().nearHexes.Count < 5)
             {
                 continue;
@@ -292,7 +317,7 @@ public class GameController : MonoBehaviour
         //number of graves
         while (i <= numGraves)
         {
-            int site = Random.Range(0, gridHolder.transform.childCount);
+            int site = UnityEngine.Random.Range(0, gridHolder.transform.childCount);
             if (gridHolder.transform.GetChild(site).GetComponent<HexScript>().nearHexes.Count < 6)
             {
                 continue;
@@ -319,7 +344,7 @@ public class GameController : MonoBehaviour
         //number of mausoleums
         while (i <= numMausoleums)
         {
-            int site = Random.Range(0, gridHolder.transform.childCount);
+            int site = UnityEngine.Random.Range(0, gridHolder.transform.childCount);
             if (gridHolder.transform.GetChild(site).GetComponent<HexScript>().nearHexes.Count < 6)
             {
                 continue;

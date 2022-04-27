@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,13 +21,38 @@ public class CardController : MonoBehaviour
     private bool checkForHandMotion = false;
     private bool checkForMotionOne = false;
 
+    // reference to first hand being tracked in frame.
+    private int firstHandID;
+
     void Update()
     {
-        // if a leap service provider is connected and there is at least one hand being tracked, check for these conditions.
-        if (leapController && leapController.CurrentFrame.Hands.Count > 0)
+        // having both hands enter at the same time is unlikely but doable and causes and error, so need to try catch this.
+        try
         {
-            Hand hand = leapController.CurrentFrame.Hands[0];
-            HandCardPull(hand);
+            // if a leap service provider is connected and a hand is being tracked, 
+            // get an ID reference to the first entered tracked hand, check for conditions. 
+            // if two hands are tracked, just watch for conditions on the first entered hand.
+            if (leapController && leapController.CurrentFrame.Hands.Count == 1)
+            {
+                firstHandID = leapController.CurrentFrame.Hands[0].Id;
+                HandCardPull(leapController.CurrentFrame.Hand(firstHandID));
+            }
+            else if (leapController && leapController.CurrentFrame.Hands.Count == 2)
+            {
+                HandCardPull(leapController.CurrentFrame.Hand(firstHandID));
+            }
+        }
+        // if both hands entered at the same time, just track hand 0. when two hands are being tracked, it's the left hand.
+        catch (Exception e)
+        {
+            if (leapController && leapController.CurrentFrame.Hands.Count > 0)
+            {
+                Hand hand = leapController.CurrentFrame.Hands[0];
+                HandCardPull(hand);
+            }
+
+            // get rid of the warning in unity.
+            Debug.Log("Error caught: " + e);
         }
     }
 
@@ -61,7 +87,7 @@ public class CardController : MonoBehaviour
             //this simply adjusts the card info and runs the card drawing until it meets the loop amount
             cardUI.transform.localPosition = new Vector3(-800, 0, 0);
             collect = false;
-            int i = Random.Range(0, cardDeck.Count);
+            int i = UnityEngine.Random.Range(0, cardDeck.Count);
 
             if (GameController.gameObject.GetComponent<GameController>().currentPlayerNum == 1)
             {
