@@ -50,9 +50,6 @@ public class CardController : MonoBehaviour
                 Hand hand = leapController.CurrentFrame.Hands[0];
                 HandCardPull(hand);
             }
-
-            // get rid of the warning in unity.
-            Debug.Log("Error caught: " + e);
         }
     }
 

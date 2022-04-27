@@ -49,11 +49,7 @@ public class PlayerMenu : MonoBehaviour
                 Hand hand = leapController.CurrentFrame.Hands[0];
                 OpenInventoryMotion(hand);
             }
-
-            // get rid of the warning in unity.
-            Debug.Log("Error caught: " + e);
         }
-        
     }
 
     private void OpenInventoryMotion(Hand hand)

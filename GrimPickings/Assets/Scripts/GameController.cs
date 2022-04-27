@@ -84,9 +84,6 @@ public class GameController : MonoBehaviour
                 Hand hand = leapController.CurrentFrame.Hands[0];
                 HandDiceRoll(hand);
             }
-
-            // get rid of the warning in unity.
-            Debug.Log("Error caught: " + e);
         }
     }
 
