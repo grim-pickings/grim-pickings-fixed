@@ -26,7 +26,7 @@ public class CardController : MonoBehaviour
 
     void Update()
     {
-        // having both hands enter at the same time is unlikely but doable and causes and error, so need to try catch this.
+        // having both hands enter at the same time is unlikely but doable and causes an error, so need to try catch this.
         try
         {
             // if a leap service provider is connected and a hand is being tracked, 
