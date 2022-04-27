@@ -30,6 +30,10 @@ public class GameController : MonoBehaviour
 
     public int currentPlayerNum = 1;
 
+    // get reference to player menus to disable / enable pinch motion.
+    [SerializeField] private PlayerMenu p1Menu;
+    [SerializeField] private PlayerMenu p2Menu;
+
     //Start the game with player 1 rolling to move
     void Start()
     {
@@ -139,6 +143,10 @@ public class GameController : MonoBehaviour
         rollButton.SetActive(true);
         checkForHandRoll = true;
 
+        // disable pinch motion. 
+        p1Menu.useHandMotion = false;
+        p2Menu.useHandMotion = false;
+
         while (diceRolled == false)
         {
             yield return null;
@@ -148,6 +156,9 @@ public class GameController : MonoBehaviour
         // reset hand motion steps if interrupted.
         checkForHandRollMoveOne = false;
         checkForHandRoll = false;
+        // re-enable pinch motion. 
+        p1Menu.useHandMotion = true;
+        p2Menu.useHandMotion = true;
         rollButton.SetActive(false);
         dice.GetComponent<DiceScript>().DiceRoll(8, "move");
         diceRolled = false;
@@ -167,7 +178,7 @@ public class GameController : MonoBehaviour
         diceRolled = true;
     }
 
-    public void HandDiceRoll(Hand hand)
+    private void HandDiceRoll(Hand hand)
     {
         // don't check when not waiting for a hand roll.
         if (!checkForHandRoll) return;

@@ -113,9 +113,12 @@ public class CardController : MonoBehaviour
 
             cardDeck.Remove(cardDeck[i]);
             count++;
-            // start checking for hand motion.
+            // start checking for hand motion, disable pinch to open menu for both players.
             checkForHandMotion = true;
             Debug.Log("checking for hand motion");
+            p1Menu.useHandMotion = false;
+            p2Menu.useHandMotion = false;
+            Debug.Log("Disabled pinch motion.");
             while (Input.GetMouseButtonDown(0) == false && handPullMotion == false)
             {
                 yield return null;
@@ -126,6 +129,9 @@ public class CardController : MonoBehaviour
             // reset hand motion detection.
             handPullMotion = false;
             checkForMotionOne = false;
+            // re-enable pinch motion for players.
+            p1Menu.useHandMotion = true;
+            p2Menu.useHandMotion = true;
             //collect is called when the card animation for stashing in the inventory is done
             while (collect == false)
             {
@@ -149,7 +155,7 @@ public class CardController : MonoBehaviour
         }
     }
 
-    public void HandCardPull(Hand hand)
+    private void HandCardPull(Hand hand)
     {
         // don't check when not waiting for hand motion.
         if (!checkForHandMotion) return;
