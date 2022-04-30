@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 using TMPro;
 using Leap;
 using Leap.Unity;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
@@ -31,6 +32,9 @@ public class GameController : MonoBehaviour
 
     public int currentPlayerNum = 1;
 
+    public int currentTurnNum;
+    public Text startText; // used for showing countdown from 3, 2, 1 
+
     // get reference to player menus to disable / enable pinch motion.
     [SerializeField] private PlayerMenu p1Menu;
     [SerializeField] private PlayerMenu p2Menu;
@@ -50,6 +54,21 @@ public class GameController : MonoBehaviour
     //lit up with the movement color then the player moves to that tile and it starts the other players turn
     void Update()
     {
+        //The combat scene is loaded after each player gets five turns - the currentTurnNum goes up by 1 every time a player moves so 5 x 2 = 10
+        if (currentTurnNum == 10)
+        {
+            //startText.text = currentTurnNum.ToString();
+            SceneManager.LoadScene("CombatPhase");
+            Debug.Log("Each player got 5 turns in demo mode so scene was switched to combat phase");
+        }
+
+        //The combat scene is loaded after each player gets ten turns - the currentTurnNum goes up by 1 every time a player moves so 10 x 2 = 20
+        // if (currentTurnNum == 20)
+        // {
+        //     SceneManager.LoadScene("CombatPhase");
+        //     Debug.Log("Each player got 5 turns in demo mode so scene was switched to combat phase");
+        // }
+
         if (Input.GetMouseButtonDown(0))
         {
             Ray ray = cameraMain.ScreenPointToRay(Input.mousePosition);
@@ -146,11 +165,17 @@ public class GameController : MonoBehaviour
         {
             canvasRotator.transform.localRotation = Quaternion.Euler(0, 0, -90);
             TurnText.text = "Player 1's Turn";
+            currentTurnNum++;
+            Debug.Log("Player one has had: " + currentTurnNum + " turns. Scene will switch once # reaches 5 for both players.");
+            startText.text = currentTurnNum.ToString();
         }
         else if (playerNum == 2)
         {
             canvasRotator.transform.localRotation = Quaternion.Euler(0, 0, 90);
             TurnText.text = "Player 2's Turn";
+            currentTurnNum++;
+            Debug.Log("Player one has had: " + currentTurnNum + " turns. Scene will switch once # reaches 5 for both players.");
+            startText.text = currentTurnNum.ToString();
         }
         float a = 0f;
         while (a < 0.785)
