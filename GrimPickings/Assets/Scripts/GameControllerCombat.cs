@@ -70,10 +70,12 @@ public class GameControllerCombat : MonoBehaviour
             if (leapController && leapController.CurrentFrame.Hands.Count == 1)
             {
                 firstHandID = leapController.CurrentFrame.Hands[0].Id;
+                HandDiceRoll(leapController.CurrentFrame.Hand(firstHandID));
                 Attack(leapController.CurrentFrame.Hand(firstHandID));
             }
             else if (leapController && leapController.CurrentFrame.Hands.Count == 2)
             {
+                HandDiceRoll(leapController.CurrentFrame.Hand(firstHandID));
                 Attack(leapController.CurrentFrame.Hand(firstHandID));
             }
         }
@@ -85,11 +87,8 @@ public class GameControllerCombat : MonoBehaviour
                 Hand hand = leapController.CurrentFrame.Hands[0];
                 // put a try catch and get a reference to a second hand?
                 HandDiceRoll(hand);
-            }
-            if (leapController && leapController.CurrentFrame.Hands.Count > 0)
-            {
-                Hand hand = leapController.CurrentFrame.Hands[0];
                 Attack(hand);
+
             }
         }
         
@@ -164,6 +163,7 @@ public class GameControllerCombat : MonoBehaviour
                 if (((GameObject)currentPlayer.GetComponent<PlayerMovement>().currentTile.GetComponent<HexScript>().nearHexes[i][0]) == players[j].GetComponent<PlayerMovement>().currentTile)
                 {
                     attackRollButton.SetActive(true);
+                    checkForAttackMotion = true;
                     targetPlayer = players[j];
                 }
             }
@@ -174,7 +174,11 @@ public class GameControllerCombat : MonoBehaviour
         {
             yield return null;
         }
-
+        checkForHandRoll = false;
+        checkForAttackMotion = false;
+        checkForMotionOne = false;
+        checkForMotionTwo = false;
+        checkForHandRollMoveOne = true;
         movementRollButton.SetActive(false);
         attackRollButton.SetActive(false);
         if(moveDiceRolled == true)
@@ -306,6 +310,7 @@ public class GameControllerCombat : MonoBehaviour
 
             // call attack function or set variable here.
             Debug.Log("attack");
+            attackDiceRolled = true;
         }
     }
 
