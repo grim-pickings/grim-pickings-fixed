@@ -36,7 +36,7 @@ MonoImporter:
   - HedgehogQuills: {instanceID: 0}
   - CrystallineTorso: {fileID: 21300000, guid: 51b6f18a977f2e84d9dca88273936634, type: 3}
   - MirrorHead: {instanceID: 0}
-  - ExsArm: {instanceID: 0}
+  - ExsArm: {fileID: 21300000, guid: ca670edcbae3bc246b01d651e4d4b3e1, type: 3}
   - MetalArm: {fileID: 21300000, guid: 374e5699da7e77743b898537a3f9f527, type: 3}
   - BrainInAJar: {fileID: 21300000, guid: 3cbae2545552db74780db7065c965dcd, type: 3}
   - CentipedeLegs: {fileID: 21300000, guid: 8cd0d37ab6e97df40bbb42088ef5379d, type: 3}
@@ -56,6 +56,84 @@ MonoImporter:
   - BigShoe: {fileID: 21300000, guid: e91a392b56df90349b3f91722a64766d, type: 3}
   - TrollTorso: {fileID: 21300000, guid: 3bb32cf712d824d41b36a059b273e129, type: 3}
   - GlassCannon: {instanceID: 0}
+  - DragonHeadPlayer: {fileID: 21300000, guid: 7cae8fe444e7e364abe3261569c99e4d, type: 3}
+  - TentaclePlayerL: {fileID: 21300000, guid: 2a70fb4d629414b498221063408246bb, type: 3}
+  - TentaclePlayerR: {fileID: 21300000, guid: 2a70fb4d629414b498221063408246bb, type: 3}
+  - GorgonHeadPlayer: {fileID: 21300000, guid: dc6e53e900129f440b9c02085415b76e, type: 3}
+  - HorseLegPlayerL: {fileID: 21300000, guid: 5ecfb3ddd10a7be4195963f8bdbcee46, type: 3}
+  - HorseLegPlayerR: {fileID: 21300000, guid: 62dd622c840944d43904949c0ad3808b, type: 3}
+  - WolfClawsPlayerL: {fileID: 21300000, guid: fe5082cec235378468d3ac2edeb04bd1, type: 3}
+  - WolfClawsPlayerR: {fileID: 21300000, guid: 401aff8fd69941f41a2bb5e009853d1a, type: 3}
+  - WingsPlayer: {instanceID: 0}
+  - GiantEyePlayer: {instanceID: 0}
+  - CrabClawPlayerL: {fileID: 21300000, guid: e86a01879bef149498d6ca20ec23d38c, type: 3}
+  - CrabClawPlayerR: {fileID: 21300000, guid: d96ee897fbb96e748a9bbf076299db38, type: 3}
+  - WerewolfHeadPlayer: {fileID: 21300000, guid: 9c105047090a3ab429895aab38cd90dc, type: 3}
+  - DeathsHoodPlayer: {fileID: 21300000, guid: 29bfeb5bc886ef0478110d9a3c6c68fe, type: 3}
+  - PorcelainArmPlayerL: {fileID: 21300000, guid: 94f7e899ff68d8545ade25b9117a2a23, type: 3}
+  - PorcelainArmPlayerR: {fileID: 21300000, guid: e950293cf6ebba04ea571f0ce276f836, type: 3}
+  - DullahansGreavesPlayerL: {instanceID: 0}
+  - DullahansGreavesPlayerR: {instanceID: 0}
+  - DullahansGauntletsPlayerL: {instanceID: 0}
+  - DullahansGauntletsPlayerR: {instanceID: 0}
+  - LichsArmPlayerL: {fileID: 21300000, guid: ad0ee2cae2521564ebb80955ba8b2add, type: 3}
+  - LichsArmPlayerR: {fileID: 21300000, guid: c057e0ecebd84424d807193b15d4171c, type: 3}
+  - MidasHandPlayerL: {fileID: 21300000, guid: 7bf2326fa191ba544b8dce77c497f492, type: 3}
+  - MidasHandPlayerR: {fileID: 21300000, guid: 82e47e1acb310474b8055b6b2568fca5, type: 3}
+  - VenusFlyTrapPlayerL: {instanceID: 0}
+  - VenusFlyTrapPlayerR: {instanceID: 0}
+  - JiangshiLegPlayerL: {fileID: 21300000, guid: 6cfc5c7c437a4174aa5a4c292a68f7e2, type: 3}
+  - JiangshiLegPlayerR: {fileID: 21300000, guid: 2de879030a630cb42a27a5d47dfc9607, type: 3}
+  - RabbitsFootPlayerL: {instanceID: 0}
+  - RabbitsFootPlayerR: {instanceID: 0}
+  - SpiderLegsPlayerL: {fileID: 21300000, guid: dba4c3c42cdd7fb418085c2a7cec51a8, type: 3}
+  - SpiderLegsPlayerR: {fileID: 21300000, guid: 239750bb64883594fadadf41638d1a88, type: 3}
+  - SlimyCenterPlayer: {instanceID: 0}
+  - EggPlayer: {fileID: 21300000, guid: ea5fcbf34d242f0469f5b8d78e6aaa14, type: 3}
+  - ShadowyCenterPlayer: {fileID: 21300000, guid: c932143030c77594fb55872da80acd57, type: 3}
+  - KappaShellPlayer: {fileID: 21300000, guid: da15dab738fd7f84fa94ef2528a141c6, type: 3}
+  - StoneyChestPlayer: {fileID: 21300000, guid: 45b59ca6a14e55547a8d94afb4cfb5e0, type: 3}
+  - AngelsHeadPlayer: {instanceID: 0}
+  - StrawHeadPlayer: {instanceID: 0}
+  - StickLegPlayerL: {instanceID: 0}
+  - StickLegPlayerR: {instanceID: 0}
+  - MushroomCapPlayer: {fileID: 21300000, guid: 8e64d7a53ff8c06478137ea7901ca23f, type: 3}
+  - IcyLegPlayerL: {instanceID: 0}
+  - IcyLegPlayerR: {instanceID: 0}
+  - HedgehogQuillsPlayer: {instanceID: 0}
+  - CrystallineTorsoPlayer: {fileID: 21300000, guid: 1278a0666f5768143ae3c4b12c60fdcc, type: 3}
+  - MirrorHeadPlayer: {instanceID: 0}
+  - ExsArmPlayerL: {fileID: 21300000, guid: 3260d8732e908bd42b467590267b9656, type: 3}
+  - ExsArmPlayerR: {fileID: 21300000, guid: 3260d8732e908bd42b467590267b9656, type: 3}
+  - MetalArmPlayerL: {instanceID: 0}
+  - MetalArmPlayerR: {instanceID: 0}
+  - BrainInAJarPlayer: {fileID: 21300000, guid: 84eb37246baf64342bc66f42940ac868, type: 3}
+  - CentipedeLegsPlayerL: {fileID: 21300000, guid: b88eeafd4215a9742bd582581a8a83b0, type: 3}
+  - CentipedeLegsPlayerR: {fileID: 21300000, guid: d9cc198be344e6b4aab2bbaeaa544f1d, type: 3}
+  - LionArmPlayerL: {instanceID: 0}
+  - LionArmPlayerR: {instanceID: 0}
+  - CatHeadPlayer: {instanceID: 0}
+  - BoarsHeadPlayer: {fileID: 21300000, guid: 0f6d84004967b8f459eb280414b538c4, type: 3}
+  - TrollLegPlayerL: {fileID: 21300000, guid: 9ff08ff90d2e7c5468ded344348948d0, type: 3}
+  - TrollLegPlayerR: {fileID: 21300000, guid: bd9c00295acb7aa4598a42cfddfbcaa5, type: 3}
+  - MoltenTorsoPlayer: {fileID: 21300000, guid: 44764babe283eae45841656d0fffbaa9, type: 3}
+  - InfernalClawsPlayerL: {fileID: 21300000, guid: 4ae4260b2cfa86b4bb04bfceb4b6f3ac, type: 3}
+  - InfernalClawsPlayerR: {fileID: 21300000, guid: 151ea8fcd539eb14890a20c6800f92a7, type: 3}
+  - MonkeysPawPlayerL: {instanceID: 0}
+  - MonkeysPawPlayerR: {instanceID: 0}
+  - EldritchVoidPlayer: {instanceID: 0}
+  - SnakePlayerL: {fileID: 21300000, guid: eab9b348606b32149a2284684424c212, type: 3}
+  - SnakePlayerR: {fileID: 21300000, guid: e697b4a0687d4064ea82bbf1c68e6448, type: 3}
+  - SasquatchLegPlayerL: {fileID: 21300000, guid: 4eb495113b12cf648997a9cd0ded84a6, type: 3}
+  - SasquatchLegPlayerR: {fileID: 21300000, guid: 4eb495113b12cf648997a9cd0ded84a6, type: 3}
+  - PumkinPlayer: {fileID: 21300000, guid: bfc7d37c4edcea64d9b7bd279f6da0f6, type: 3}
+  - JackOLanternPlayer: {fileID: 21300000, guid: 2eac30cd87d7a7d4bb7007b2772ef365, type: 3}
+  - ClownHeadPlayer: {fileID: 21300000, guid: bb8fefbd0b00d904b9cf30121f94c49f, type: 3}
+  - BigShoePlayerL: {fileID: 21300000, guid: e7f70b00981e5ca4c9b15a1617aa1a50, type: 3}
+  - BigShoePlayerR: {fileID: 21300000, guid: e7f70b00981e5ca4c9b15a1617aa1a50, type: 3}
+  - TrollTorsoPlayer: {fileID: 21300000, guid: 57dbf9949b4b3164b8c406dd4025e6e1, type: 3}
+  - GlassCannonPlayerL: {instanceID: 0}
+  - GlassCannonPlayerR: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

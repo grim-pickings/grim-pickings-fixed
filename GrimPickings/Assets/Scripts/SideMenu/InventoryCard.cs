@@ -60,6 +60,7 @@ public class InventoryCard : MonoBehaviour
         if (assignedPlayer == player1)
         {
             string partName = cardRef.bodyPart;
+            Sprite partIcon= cardRef.bodyImg;
             if(partName == "Arm")
             {
                 partName = player1data.armSide + " Arm";
@@ -70,6 +71,7 @@ public class InventoryCard : MonoBehaviour
                 else if(player1data.armSide == "Right")
                 {
                     player1data.armSide = "Left";
+                    partIcon = cardRef.bodyImgAlt;
                 }
             }
             if (partName == "Leg")
@@ -82,14 +84,16 @@ public class InventoryCard : MonoBehaviour
                 else if (player1data.legSide == "Right")
                 {
                     player1data.legSide = "Left";
+                    partIcon = cardRef.bodyImgAlt;
                 }
             }
-            player1data.StatUpdate(partName, cardRef.health, cardRef.attack, cardRef.speed, cardRef.img, cardRef);
+            player1data.StatUpdate(partName, cardRef.health, cardRef.attack, cardRef.speed, partIcon, cardRef);
 
         }
         if (assignedPlayer == player2)
         {
             string partName = cardRef.bodyPart;
+            Sprite partIcon = cardRef.bodyImg;
             if (partName == "Arm")
             {
                 partName = player2data.armSide + " Arm";
@@ -100,6 +104,7 @@ public class InventoryCard : MonoBehaviour
                 else if (player2data.armSide == "Right")
                 {
                     player2data.armSide = "Left";
+                    partIcon = cardRef.bodyImgAlt;
                 }
             }
             if (partName == "Leg")
@@ -112,9 +117,10 @@ public class InventoryCard : MonoBehaviour
                 else if (player2data.legSide == "Right")
                 {
                     player2data.legSide = "Left";
+                    partIcon = cardRef.bodyImgAlt;
                 }
             }
-            player2data.StatUpdate(partName, cardRef.health, cardRef.attack, cardRef.speed, cardRef.img, cardRef);
+            player2data.StatUpdate(partName, cardRef.health, cardRef.attack, cardRef.speed, partIcon, cardRef);
         }
     }
 }

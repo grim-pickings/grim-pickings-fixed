@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,6 +10,18 @@ using Leap.Unity;
 
 public class GameControllerCombat : MonoBehaviour
 {
+    // will the scene have a PlayerMenu script being used? 
+    // if so, set useHandMotion to false on both references when an attack motion is being checked for. 
+    // then, when an attack motion is no longer being checked for, set useHandMotion back to true.
+    [SerializeField] private PlayerMenu p1Menu;
+    [SerializeField] private PlayerMenu p2Menu;
+    // reference to first hand being tracked in frame.
+    private int firstHandID;
+
+    private bool checkForAttackMotion = false;
+    private bool checkForMotionOne = false;
+    private bool checkForMotionTwo = false;
+
     [SerializeField] private LeapServiceProvider leapController;
     [SerializeField] private UnityEngine.UI.Image backgroundShader;
     [SerializeField] private TMP_Text TurnText;
@@ -49,14 +62,37 @@ public class GameControllerCombat : MonoBehaviour
                 StartCoroutine(movement(hit.collider.gameObject));
             }
         }
-
-        // if a leap service provider is connected and there is at least one hand being tracked, check for these conditions.
-        if (leapController && leapController.CurrentFrame.Hands.Count > 0)
+        try
         {
-            Hand hand = leapController.CurrentFrame.Hands[0];
-            // put a try catch and get a reference to a second hand?
-            HandDiceRoll(hand);
+            // if a leap service provider is connected and a hand is being tracked, 
+            // get an ID reference to the first entered tracked hand, check for conditions. 
+            // if two hands are tracked, just watch for conditions on the first entered hand.
+            if (leapController && leapController.CurrentFrame.Hands.Count == 1)
+            {
+                firstHandID = leapController.CurrentFrame.Hands[0].Id;
+                Attack(leapController.CurrentFrame.Hand(firstHandID));
+            }
+            else if (leapController && leapController.CurrentFrame.Hands.Count == 2)
+            {
+                Attack(leapController.CurrentFrame.Hand(firstHandID));
+            }
         }
+        // if a leap service provider is connected and there is at least one hand being tracked, check for these conditions.
+        catch (Exception e)
+        {
+            if (leapController && leapController.CurrentFrame.Hands.Count > 0)
+            {
+                Hand hand = leapController.CurrentFrame.Hands[0];
+                // put a try catch and get a reference to a second hand?
+                HandDiceRoll(hand);
+            }
+            if (leapController && leapController.CurrentFrame.Hands.Count > 0)
+            {
+                Hand hand = leapController.CurrentFrame.Hands[0];
+                Attack(hand);
+            }
+        }
+        
     }
 
     //This is where caling the DiceRoll function returns. Currently it only has functionality for moving
@@ -83,7 +119,7 @@ public class GameControllerCombat : MonoBehaviour
         float t = 0f;
         while (t < 1)
         {
-            t += Time.deltaTime / 15f;
+            t += 0.01f;
 
             if (t > 1)
             {
@@ -95,7 +131,7 @@ public class GameControllerCombat : MonoBehaviour
             {
                 break;
             }
-            yield return null;
+            yield return new WaitForSeconds(0.01f);
         }
 
         cameraMain.transform.position = new Vector3(currentPlayer.transform.position.x, currentPlayer.transform.position.y, -5);
@@ -113,10 +149,10 @@ public class GameControllerCombat : MonoBehaviour
         float a = 0f;
         while (a < 0.785)
         {
-            a += 0.004f;
+            a += 0.01f;
             backgroundShader.color = new Color(0f, 0f, 0f, a);
             TurnText.color = new Color(1f, 1f, 1f, a + 0.215f);
-            yield return new WaitForSeconds(0.0025f);
+            yield return new WaitForSeconds(0.01f);
         }
 
         // check for button click or hand motion.
@@ -155,10 +191,10 @@ public class GameControllerCombat : MonoBehaviour
         yield return new WaitForSeconds(7f);
         while (a > 0)
         {
-            a -= 0.004f;
+            a -= 0.01f;
             backgroundShader.color = new Color(0f, 0f, 0f, a);
             TurnText.color = new Color(1f, 1f, 1f, a);
-            yield return new WaitForSeconds(0.0025f);
+            yield return new WaitForSeconds(0.01f);
         }
         TurnText.color = new Color(1f, 1f, 1f, 0f);
     }
@@ -217,10 +253,10 @@ public class GameControllerCombat : MonoBehaviour
         }
     }
 
-    public void HandFingerGun(Hand hand)
+    private void Attack(Hand hand)
     {
-        // don't check when not waiting for a hand roll.
-        if (!checkForHandRoll) return;
+        // don't check when not waiting for an attack motion.
+        if (!checkForAttackMotion) return;
 
         // get fingers.
         Finger thumb = hand.Fingers[0];
@@ -229,29 +265,47 @@ public class GameControllerCombat : MonoBehaviour
         Finger ring = hand.Fingers[3];
         Finger pinky = hand.Fingers[4];
 
+        // check for thumb and index out only first.
+        if (thumb.IsExtended
+            && index.IsExtended
+            && !middle.IsExtended
+            && !ring.IsExtended
+            && !pinky.IsExtended
+        )
+        {
+            checkForMotionOne = true;
+        }
+
+        // after the first motion is done, check to see that thumb, index, and all other fingers are closed.
         if (!thumb.IsExtended
             && !index.IsExtended
             && !middle.IsExtended
             && !ring.IsExtended
             && !pinky.IsExtended
-            && !checkForHandRollMoveOne
+            && checkForMotionOne
         )
         {
-            // put some visual indicator for these steps?
-            Debug.Log("hand is closed");
-            // hand is closed.
-            checkForHandRollMoveOne = true;
+            checkForMotionTwo = true;
         }
+
+        // check that thumb and index are out again, then attack.
         if (thumb.IsExtended
             && index.IsExtended
-            && middle.IsExtended
+            && !middle.IsExtended
+            && !ring.IsExtended
+            && !pinky.IsExtended
+            && checkForMotionOne
+            && checkForMotionTwo
         )
         {
-            Debug.Log("finger guns");
-            // hand is opened, dice is rolled.
-            checkForHandRollMoveOne = false;
-            checkForHandRoll = false;
-            attackDiceRolled = true;
+            // reset hand motion checks. 
+            // IMPORTANT: if there is a button option to attack, be sure to reset all the motion checks there too when it is pressed.
+            checkForAttackMotion = false;
+            checkForMotionOne = false;
+            checkForMotionTwo = false;
+
+            // call attack function or set variable here.
+            Debug.Log("attack");
         }
     }
 
@@ -262,19 +316,19 @@ public class GameControllerCombat : MonoBehaviour
         Vector3 currentCameraPos = cameraMain.transform.position;
         while (t < 1)
         {
-            t += Time.deltaTime / 0.25f;
+            t += 0.01f;
 
             if (t > 1)
             {
                 t = 1;
             }
 
-            cameraMain.transform.position = Vector3.Lerp(currentCameraPos, new Vector3(camPosMain[0], camPosMain[1], camPosMain[2]), t);
+            cameraMain.transform.position = Vector3.Lerp(cameraMain.transform.position, new Vector3(camPosMain[0], camPosMain[1], camPosMain[2]), t);
             if (cameraMain.transform.position.z < camPosMain[2] + 0.01f)
             {
                 break;
             }
-            yield return null;
+            yield return new WaitForSeconds(0.01f);
         }
 
         cameraMain.transform.position = new Vector3(camPosMain[0], camPosMain[1], camPosMain[2]);

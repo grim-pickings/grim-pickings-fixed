@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
-    [SerializeField] private GameObject cardTemplate;
+    [SerializeField] private GameObject cardTemplate, GameController;
     private List<Deck.Card> cardsInStock = new List<Deck.Card>();
     [SerializeField] private Sprite defaultSprite;
     [SerializeField] private int cardSpacing = 50;
@@ -69,6 +69,28 @@ public class Inventory : MonoBehaviour
             Destroy(cardObj.gameObject);
         });
         cardObjects.Clear();
+        if (GameController.GetComponent<GameController>() != null)
+        {
+            if (player == GameController.GetComponent<GameController>().player1)
+            {
+                DataStorage.player1Inventory = cardsInStock;
+            }
+            else if (player == GameController.GetComponent<GameController>().player2)
+            {
+                DataStorage.player2Inventory = cardsInStock;
+            }
+        }
+        else if (GameController.GetComponent<GearUpGameController>() != null)
+        {
+            if (player == GameController.GetComponent<GearUpGameController>().player1)
+            {
+                DataStorage.player1Inventory = cardsInStock;
+            }
+            else if (player == GameController.GetComponent<GearUpGameController>().player2)
+            {
+                DataStorage.player2Inventory = cardsInStock;
+            }
+        }
         // Add new card object based on the current inventory
         for (int i = 0; i < cardsInStock.Count; i++)
         {

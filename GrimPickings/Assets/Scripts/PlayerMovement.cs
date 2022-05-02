@@ -17,8 +17,12 @@ public class PlayerMovement : MonoBehaviour
     // Function used to stgore movement and pass it along to the tile it is standing on
     public void MoveArea(int moveRoll)
     {
-        movement = moveRoll;
-        currentTile.GetComponent<HexScript>().MovementUpdate(moveRoll, this.gameObject, true, 0);
+        movement = moveRoll + this.transform.GetChild(0).transform.GetChild(0).GetComponent<PlayerData>().speedMod;
+        if(movement < 1)
+        {
+            movement = 1;
+        }
+        currentTile.GetComponent<HexScript>().MovementUpdate(movement, this.gameObject, true, 0);
     }
 
     // Function used to find where the player is at when it is called and stores the matching tile as it's currentTile

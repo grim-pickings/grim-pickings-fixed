@@ -46,11 +46,11 @@ public class DiceScript : MonoBehaviour
         Color diceColor = diceImg.color;
         while (a < 1)
         {
-            a += 0.005f;
+            a += 0.01f;
             diceColor.a = a;
             diceImg.color = diceColor;
             diceText.color = new Color(1f, 1f, 1f, a);
-            yield return new WaitForSeconds(0.0025f);
+            yield return new WaitForSeconds(0.01f);
         }
         int i = 0;
         int num = 0;
@@ -64,11 +64,11 @@ public class DiceScript : MonoBehaviour
         yield return new WaitForSeconds(2f);
         while (a > 0)
         {
-            a -= 0.005f;
+            a -= 0.01f;
             diceColor.a = a;
             diceImg.color = diceColor;
             diceText.color = new Color(1f, 1f, 1f, a);
-            yield return new WaitForSeconds(0.0025f);
+            yield return new WaitForSeconds(0.01f);
         }
         if (controller.GetComponent<GameController>() != null)
         {

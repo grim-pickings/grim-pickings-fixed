@@ -6,12 +6,12 @@ using UnityEngine.UI;
 
 public class PlayerData : MonoBehaviour
 {
-    [SerializeField] private GameObject playerInventory;
+    public GameObject playerInventory;
     [SerializeField] private GameObject player;
-    
-    private int health = 100;
-    private int attack = 5;
-    private int speed = 5;
+
+    public int health = 50;
+    public int attack = 5;
+    public int speed = 5;
 
     public int attackMod = 0;
     public int speedMod = 0;
@@ -103,7 +103,15 @@ public class PlayerData : MonoBehaviour
                 {
                     playerInventory.GetComponent<Inventory>().AddToInventory(LeftLegCard, player);
                 }
-                LeftLegCard = cardRef;
+                LeftLegCard = cardRef; 
+                if(player.name == "Player1")
+                {
+                    DataStorage.Player1LeftLeg = cardRef;
+                }
+                else if (player.name == "Player2")
+                {
+                    DataStorage.Player2LeftLeg = cardRef;
+                }
                 // new part becomes the old piece reference.
                 oldLeftLegHP = healthPart;
                 oldLeftLegAttack = attackPart;
@@ -120,6 +128,14 @@ public class PlayerData : MonoBehaviour
                     playerInventory.GetComponent<Inventory>().AddToInventory(RightLegCard, player);
                 }
                 RightLegCard = cardRef;
+                if (player.name == "Player1")
+                {
+                    DataStorage.Player1RightLeg = cardRef;
+                }
+                else if (player.name == "Player2")
+                {
+                    DataStorage.Player2RightLeg = cardRef;
+                }
                 // store stat history of new part as old part.
                 oldRightLegHP = healthPart;
                 oldRightLegAttack = attackPart;
@@ -136,6 +152,14 @@ public class PlayerData : MonoBehaviour
                     playerInventory.GetComponent<Inventory>().AddToInventory(LeftArmCard, player);
                 }
                 LeftArmCard = cardRef;
+                if (player.name == "Player1")
+                {
+                    DataStorage.Player1LeftArm = cardRef;
+                }
+                else if (player.name == "Player2")
+                {
+                    DataStorage.Player2LeftArm = cardRef;
+                }
                 // store latest stat history.
                 oldLeftArmHP = healthPart;
                 oldLeftArmAttack = attackPart;
@@ -152,6 +176,14 @@ public class PlayerData : MonoBehaviour
                     playerInventory.GetComponent<Inventory>().AddToInventory(RightArmCard, player);
                 }
                 RightArmCard = cardRef;
+                if (player.name == "Player1")
+                {
+                    DataStorage.Player1RightArm = cardRef;
+                }
+                else if (player.name == "Player2")
+                {
+                    DataStorage.Player2RightArm = cardRef;
+                }
                 // store latest stat history.
                 oldRightArmHP = healthPart;
                 oldRightArmAttack = attackPart;
@@ -168,6 +200,14 @@ public class PlayerData : MonoBehaviour
                     playerInventory.GetComponent<Inventory>().AddToInventory(BodyCard, player);
                 }
                  BodyCard = cardRef;
+                if (player.name == "Player1")
+                {
+                    DataStorage.Player1Body = cardRef;
+                }
+                else if (player.name == "Player2")
+                {
+                    DataStorage.Player2Body = cardRef;
+                }
                 // store latest stat history.
                 oldBodyHP = healthPart;
                 oldBodyAttack = attackPart;
@@ -185,6 +225,14 @@ public class PlayerData : MonoBehaviour
                 }
 
                 HeadCard = cardRef;
+                if (player.name == "Player1")
+                {
+                    DataStorage.Player1Head = cardRef;
+                }
+                else if (player.name == "Player2")
+                {
+                    DataStorage.Player2Head = cardRef;
+                }
                 // store latest stat history.
                 oldHeadHP = healthPart;
                 oldHeadAttack = attackPart;
@@ -207,19 +255,35 @@ public class PlayerData : MonoBehaviour
         if(attack > 5)
         {
             attackMod = (attack - 5) * 2;
+            if(attackMod > 10)
+            {
+                attackMod = 10;
+            }
         }
         else if (attack < 5)
         {
             attackMod = -(5 - attack) * 2;
+            if (attackMod < -8)
+            {
+                attackMod = -8;
+            }
         }
 
         if (speed > 5)
         {
             speedMod = speed - 5;
+            if (speedMod > 5)
+            {
+                speedMod = 5;
+            }
         }
-        else if (speed > 5)
+        else if (speed < 5)
         {
             speedMod = -(5 - speed);
+            if (speedMod < -4)
+            {
+                speedMod = -4;
+            }
         }
 
         statText.text = "Health: " + health + "\nAttack: " + attack + "\nSpeed : " + speed;

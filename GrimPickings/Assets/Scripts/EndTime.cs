@@ -3,27 +3,57 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class EndTime : MonoBehaviour
 {
-    public float timeLeft = 600.0f;
-    public Text startText; // used for showing countdown from 3, 2, 1 
+    public GameObject player1, player2, GameController, cameraMain, VictoryText;
 
     void Update()
     {
-        timeLeft -= Time.deltaTime;
-        startText.text = (timeLeft).ToString("0");
-        if (timeLeft <= 0)
+        if (player2.GetComponent<PlayerData>().health <= 0)
         {
-            GameOver();
-            timeLeft = 0;
-
+            StartCoroutine(GameOver(player1));
+        }
+        if (player1.GetComponent<PlayerData>().health <= 0)
+        {
+            StartCoroutine(GameOver(player2));
         }
     }
 
-    public void GameOver()
+    public IEnumerator GameOver(GameObject winner)
     {
-        //Debug.Log("Game Over");
-        //Application.Quit();
+        GameController.SetActive(false);
+        if (winner == player1)
+        {
+            VictoryText.GetComponent<TMP_Text>().text = "Player 1 Wins!";
+            player2.SetActive(false);
+        }
+        if (winner == player2)
+        {
+            VictoryText.GetComponent<TMP_Text>().text = "Player 2 Wins!";
+            player1.SetActive(false);
+        }
+        float t = 0f;
+        while (t < 1)
+        {
+            t += 0.01f;
+
+            if (t > 1)
+            {
+                t = 1;
+            }
+
+            cameraMain.transform.position = Vector3.Lerp(cameraMain.transform.position, new Vector3(winner.transform.position.x, winner.transform.position.y, -5), t);
+            if (cameraMain.transform.position.z > -5.01f)
+            {
+                break;
+            }
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        yield return new WaitForSeconds(3f);
+
+        SceneManager.LoadScene("TitleScreen");
     }
 }

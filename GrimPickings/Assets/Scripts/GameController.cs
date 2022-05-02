@@ -34,7 +34,7 @@ public class GameController : MonoBehaviour
 
     public int currentTurnNumP1 = 0;
     public int currentTurnNumP2 = 0;
-    public int turnCap = 5;
+    private int turnCap = 2;
     public TMP_Text startText; // used for showing countdown from 3, 2, 1 
 
     // get reference to player menus to disable / enable pinch motion.
@@ -128,7 +128,7 @@ public class GameController : MonoBehaviour
         float t = 0f;
         while (t < 1)
         {
-            t += Time.deltaTime / 15f;
+            t += 0.01f;
 
             if (t > 1)
             {
@@ -140,7 +140,7 @@ public class GameController : MonoBehaviour
             {
                 break;
             }
-            yield return null;
+            yield return new WaitForSeconds(0.01f);
         }
 
         cameraMain.transform.position = new Vector3(currentPlayer.transform.position.x, currentPlayer.transform.position.y, -5);
@@ -176,11 +176,11 @@ public class GameController : MonoBehaviour
         float a = 0f;
         while (a < 0.785)
         {
-            a += 0.004f;
+            a += 0.01f;
             backgroundShader.color = new Color(0f, 0f, 0f, a);
             TurnText.color = new Color(1f, 1f, 1f, a + 0.215f);
             startText.color = new Color(1f, 1f, 1f, a + 0.215f);
-            yield return new WaitForSeconds(0.0025f);
+            yield return new WaitForSeconds(0.01f);
         }
 
         // check for button click or hand motion.
@@ -209,11 +209,11 @@ public class GameController : MonoBehaviour
         yield return new WaitForSeconds(7f);
         while (a > 0)
         {
-            a -= 0.004f;
+            a -= 0.01f;
             backgroundShader.color = new Color(0f, 0f, 0f, a);
             TurnText.color = new Color(1f, 1f, 1f, a);
             startText.color = new Color(1f, 1f, 1f, a);
-            yield return new WaitForSeconds(0.0025f);
+            yield return new WaitForSeconds(0.01f);
         }
         TurnText.color = new Color(1f, 1f, 1f, 0f);
     }
@@ -397,19 +397,19 @@ public class GameController : MonoBehaviour
         Vector3 currentCameraPos = cameraMain.transform.position;
         while (t < 1)
         {
-            t += Time.deltaTime / 0.25f;
+            t += 0.01f;
 
             if (t > 1)
             {
                 t = 1;
             }
 
-            cameraMain.transform.position = Vector3.Lerp(currentCameraPos, new Vector3(camPosMain[0], camPosMain[1], camPosMain[2]), t);
+            cameraMain.transform.position = Vector3.Lerp(cameraMain.transform.position, new Vector3(camPosMain[0], camPosMain[1], camPosMain[2]), t);
             if (cameraMain.transform.position.z < camPosMain[2] + 0.01f)
             {
                 break;
             }
-            yield return null;
+            yield return new WaitForSeconds(0.01f);
         }
 
         cameraMain.transform.position = new Vector3(camPosMain[0], camPosMain[1], camPosMain[2]);
