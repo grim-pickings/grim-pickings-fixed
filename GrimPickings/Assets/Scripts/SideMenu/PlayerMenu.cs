@@ -12,7 +12,8 @@ public class PlayerMenu : MonoBehaviour
     [SerializeField] private GameObject menu, GameController;
     [SerializeField] private Inventory storedInventoryP1;
     [SerializeField] private Inventory storedInventoryP2;
-    [SerializeField] private Inventory otherInventory;
+    [SerializeField] private Inventory otherInventoryP1;
+    [SerializeField] private Inventory otherInventoryP2;
 
     // controls whether pinch motion will open inventory menu or not. affected by other scripts that use hand motions.
     // when the game is checking for any other hand motion, set this to false from that script. set back to true afterwards.
@@ -87,16 +88,23 @@ public class PlayerMenu : MonoBehaviour
         {
             if(GameController.GetComponent<GameController>().currentPlayer == GameController.GetComponent<GameController>().player1)
             {
-                storedInventoryP1.AddToInventory(newCard);
+                storedInventoryP1.AddToInventory(newCard, GameController.GetComponent<GameController>().currentPlayer);
             }
             else if (GameController.GetComponent<GameController>().currentPlayer == GameController.GetComponent<GameController>().player2)
             {
-                storedInventoryP2.AddToInventory(newCard);
+                storedInventoryP2.AddToInventory(newCard, GameController.GetComponent<GameController>().currentPlayer);
             }
         }
         else
         {
-            otherInventory.AddToInventory(newCard);
+            if (GameController.GetComponent<GameController>().currentPlayer == GameController.GetComponent<GameController>().player1)
+            {
+                otherInventoryP1.AddToInventory(newCard, GameController.GetComponent<GameController>().currentPlayer);
+            }
+            else if (GameController.GetComponent<GameController>().currentPlayer == GameController.GetComponent<GameController>().player2)
+            {
+                otherInventoryP2.AddToInventory(newCard, GameController.GetComponent<GameController>().currentPlayer);
+            }
         }
     }
 

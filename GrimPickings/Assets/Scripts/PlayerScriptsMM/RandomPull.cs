@@ -28,6 +28,6 @@ public class RandomPull : MonoBehaviour
 
         Debug.Log(cardName + " " + cardPart + " " + cardHealth + " " + cardAttack + " " + cardSpeed);
 
-        playerData.StatUpdate(cardPart, cardHealth, cardAttack, cardSpeed, image);
+        playerData.StatUpdate(cardPart, cardHealth, cardAttack, cardSpeed, image, cardDeck[i]);
     }
 }

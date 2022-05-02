@@ -603,8 +603,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   menu: {fileID: 5397127079918963211}
-  storedInventory: {fileID: 1975020559015976831}
-  otherInventory: {fileID: 0}
+  GameController: {fileID: 0}
+  storedInventoryP1: {fileID: 0}
+  storedInventoryP2: {fileID: 0}
+  otherInventoryP1: {fileID: 0}
+  otherInventoryP2: {fileID: 0}
+  leapController: {fileID: 0}
+  useHandMotion: 1
 --- !u!1 &5397127079506975693
 GameObject:
   m_ObjectHideFlags: 0

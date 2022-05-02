@@ -16,10 +16,16 @@ public class Inventory : MonoBehaviour
     private int lastInventoryCount = 0;
 
     // Adds card to inventory to be rendered
-    public void AddToInventory(Deck.Card newCard)
+    public void AddToInventory(Deck.Card newCard, GameObject player)
     {
         cardsInStock.Add(newCard);
-        UpdateInventory();
+        UpdateInventory(player);
+    }
+
+    public void RemoveFromInventory(Deck.Card card, GameObject player)
+    {
+        cardsInStock.Remove(card);
+        UpdateInventory(player);
     }
 
     public void Start()
@@ -29,7 +35,7 @@ public class Inventory : MonoBehaviour
         // AddTestCard();
     }
 
-    public void AddTestCard()
+    /*public void AddTestCard()
     {
         AddToInventory(
              new Deck.Card(
@@ -48,9 +54,9 @@ public class Inventory : MonoBehaviour
                  "None" //gesture
             )
         );
-    }
+    }*/
 
-    private void UpdateInventory()
+    private void UpdateInventory(GameObject player)
     {
         //if (cardObjects.Count == 0 || lastInventoryCount == cardObjects.Count)
         //{
@@ -72,7 +78,7 @@ public class Inventory : MonoBehaviour
                 this.gameObject.transform
             ));
             //cardObjects[i].gameObject.transform.position = new Vector3(handOffsetX, handOffsetY + cardSpacing * i, 0);
-            cardObjects[i].GetComponent<InventoryCard>().SetCardRef(currentCard);
+            cardObjects[i].GetComponent<InventoryCard>().SetCardRef(currentCard, player);
         }
     }
 
