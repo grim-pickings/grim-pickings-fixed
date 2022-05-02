@@ -23,7 +23,7 @@ public class EndTime : MonoBehaviour
 
     public void GameOver()
     {
-        Debug.Log("Game Over");
-        Application.Quit();
+        //Debug.Log("Game Over");
+        //Application.Quit();
     }
 }

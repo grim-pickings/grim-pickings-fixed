@@ -40,6 +40,7 @@ public class DiceScript : MonoBehaviour
     // the controller which is where all rolls should be called from
     IEnumerator diceRoll(GameObject dice, TMP_Text diceText, int diceNum, string type)
     {
+        dice.SetActive(true);
         float a = 0f;
         Image diceImg = dice.transform.GetChild(0).gameObject.GetComponent<Image>();
         Color diceColor = diceImg.color;
@@ -77,5 +78,6 @@ public class DiceScript : MonoBehaviour
         {
             controller.GetComponent<GameControllerCombat>().RollResult(num, type);
         }
+        dice.SetActive(false);
     }
 }

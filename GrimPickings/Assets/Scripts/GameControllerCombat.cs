@@ -22,8 +22,11 @@ public class GameControllerCombat : MonoBehaviour
     private bool checkForHandRollMoveOne = false;
 
     public List<GameObject> rangeHexes = new List<GameObject>();
-    public GameObject currentPlayer, player1, player2, rollButton;
-    private bool diceRolled = false;
+    public GameObject currentPlayer, targetPlayer, player1, player2, movementRollButton, attackRollButton;
+    public GameObject[] players;
+    private bool moveDiceRolled = false;
+    private bool attackDiceRolled = false;
+    private int damage;
 
     //Start the game with player 1 rolling to move
     void Start()
@@ -66,6 +69,10 @@ public class GameControllerCombat : MonoBehaviour
                 currentPlayer.GetComponent<PlayerMovement>().MoveArea(result);
                 break;
             case "attack":
+                StartCoroutine(Attack(result));
+                break;
+            case "damage":
+                damage = result + currentPlayer.transform.GetChild(0).transform.GetChild(0).GetComponent<PlayerData>().attackMod;
                 break;
         }
     }
@@ -113,16 +120,38 @@ public class GameControllerCombat : MonoBehaviour
         }
 
         // check for button click or hand motion.
-        rollButton.SetActive(true);
+        movementRollButton.SetActive(true);
+        for(int i = 0; i < currentPlayer.GetComponent<PlayerMovement>().currentTile.GetComponent<HexScript>().nearHexes.Count; i++)
+        {
+            for(int j = 0; j < players.Length; j++)
+            {
+                if (((GameObject)currentPlayer.GetComponent<PlayerMovement>().currentTile.GetComponent<HexScript>().nearHexes[i][0]) == players[j].GetComponent<PlayerMovement>().currentTile)
+                {
+                    attackRollButton.SetActive(true);
+                    targetPlayer = players[j];
+                }
+            }
+        }
         checkForHandRoll = true;
 
-        while (diceRolled == false)
+        while (moveDiceRolled == false && attackDiceRolled == false)
         {
             yield return null;
         }
-        rollButton.SetActive(false);
-        dice.GetComponent<DiceScript>().DiceRoll(8, "move");
-        diceRolled = false;
+
+        movementRollButton.SetActive(false);
+        attackRollButton.SetActive(false);
+        if(moveDiceRolled == true)
+        {
+            dice.GetComponent<DiceScript>().DiceRoll(8, "move");
+        }
+        else if (attackDiceRolled == true)
+        {
+            dice.GetComponent<DiceScript>().DiceRoll(20, "attack");
+            dice.GetComponent<DiceScript>().DiceRoll(10, "damage");
+        }
+        moveDiceRolled = false;
+        attackDiceRolled = false;
         yield return new WaitForSeconds(7f);
         while (a > 0)
         {
@@ -134,9 +163,17 @@ public class GameControllerCombat : MonoBehaviour
         TurnText.color = new Color(1f, 1f, 1f, 0f);
     }
 
-    public void RollDice()
+    public void RollDice(string type)
     {
-        diceRolled = true;
+        switch (type)
+        {
+            case "move":
+                moveDiceRolled = true;
+                break;
+            case "attack":
+                attackDiceRolled = true;
+                break;
+        }
     }
 
     public void HandDiceRoll(Hand hand)
@@ -176,7 +213,7 @@ public class GameControllerCombat : MonoBehaviour
             // hand is opened, dice is rolled.
             checkForHandRollMoveOne = false;
             checkForHandRoll = false;
-            diceRolled = true;
+            moveDiceRolled = true;
         }
     }
 
@@ -214,7 +251,7 @@ public class GameControllerCombat : MonoBehaviour
             // hand is opened, dice is rolled.
             checkForHandRollMoveOne = false;
             checkForHandRoll = false;
-            diceRolled = true;
+            attackDiceRolled = true;
         }
     }
 
@@ -272,6 +309,37 @@ public class GameControllerCombat : MonoBehaviour
         }
 
         currentPlayer.GetComponent<PlayerMovement>().FindTile();
+        if (currentPlayer == player1) { currentPlayer = player2; StartCoroutine(TurnStart(2)); }
+        else { currentPlayer = player1; StartCoroutine(TurnStart(1)); }
+    }
+
+    IEnumerator Attack(int result)
+    {
+        GameObject destination = currentPlayer.GetComponent<PlayerMovement>().currentTile;
+
+        yield return new WaitForSeconds(0.5f);
+
+        //Checks to see if the player is at their destination or not
+        while (currentPlayer.transform.position.x >= targetPlayer.transform.position.x + 0.01f || currentPlayer.transform.position.x <= targetPlayer.transform.position.x - 0.01f ||
+            currentPlayer.transform.position.y >= targetPlayer.transform.position.y + 0.01f || currentPlayer.transform.position.y <= targetPlayer.transform.position.y - 0.01f)
+        {
+            currentPlayer.transform.position = Vector3.Lerp(currentPlayer.transform.position, targetPlayer.transform.position, Time.deltaTime * 10f);
+            yield return null;
+        }
+
+        if(result <= 15)
+        {
+            targetPlayer.transform.GetChild(0).transform.GetChild(0).GetComponent<PlayerData>().DamageTaken(damage);
+        }
+
+        while (currentPlayer.transform.position.x >= destination.transform.position.x + 0.01f || currentPlayer.transform.position.x <= destination.transform.position.x - 0.01f ||
+            currentPlayer.transform.position.y >= destination.transform.position.y + 0.01f || currentPlayer.transform.position.y <= destination.transform.position.y - 0.01f)
+        {
+            currentPlayer.transform.position = Vector3.Lerp(currentPlayer.transform.position, destination.transform.position, Time.deltaTime * 4f);
+            yield return null;
+        }
+        currentPlayer.transform.position = destination.transform.position;
+
         if (currentPlayer == player1) { currentPlayer = player2; StartCoroutine(TurnStart(2)); }
         else { currentPlayer = player1; StartCoroutine(TurnStart(1)); }
     }

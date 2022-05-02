@@ -6,9 +6,12 @@ using UnityEngine.UI;
 
 public class PlayerData : MonoBehaviour
 {
-    private float health = 0;
-    private float attack = 0;
-    private float speed = 0;
+    private int health = 100;
+    private int attack = 5;
+    private int speed = 5;
+
+    public int attackMod = 0;
+    public int speedMod = 0;
 
     public TextMeshProUGUI statText;
 
@@ -44,6 +47,18 @@ public class PlayerData : MonoBehaviour
     private int oldRightLegHP = 0;
     private int oldRightLegAttack = 0;
     private int oldRightLegSpeed = 0;
+
+    public void Awake()
+    {
+        Debug.Log(attackMod);
+        statText.text = "Health: " + health + "\nAttack: " + attack + "\nSpeed : " + speed;
+    }
+
+    public void DamageTaken(int damage)
+    {
+        health -= damage;
+        statText.text = "Health: " + health + "\nAttack: " + attack + "\nSpeed : " + speed;
+    }
 
     // update player data and stat label with passed in data. 
     public void StatUpdate(string bodyPart, int healthPart, int attackPart, int speedPart, Sprite imagePart, string bodyPartSide = "")
@@ -151,6 +166,24 @@ public class PlayerData : MonoBehaviour
         health += healthPart;
         attack += attackPart;
         speed += speedPart;
+
+        if(attack > 5)
+        {
+            attackMod = (attack - 5) * 2;
+        }
+        else if (attack < 5)
+        {
+            attackMod = -(5 - attack) * 2;
+        }
+
+        if (speed > 5)
+        {
+            speedMod = speed - 5;
+        }
+        else if (speed > 5)
+        {
+            speedMod = -(5 - speed);
+        }
 
         statText.text = "Health: " + health + "\nAttack: " + attack + "\nSpeed : " + speed;
 
