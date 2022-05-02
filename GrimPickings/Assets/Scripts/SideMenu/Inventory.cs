@@ -52,10 +52,10 @@ public class Inventory : MonoBehaviour
 
     private void UpdateInventory()
     {
-        if (cardObjects.Count == 0 || lastInventoryCount == cardObjects.Count)
-        {
-            return;
-        }
+        //if (cardObjects.Count == 0 || lastInventoryCount == cardObjects.Count)
+        //{
+            //return;
+        //}
         lastInventoryCount = cardObjects.Count;
         // Clean up old card objects
         cardObjects.ForEach(delegate (GameObject cardObj)
@@ -71,14 +71,14 @@ public class Inventory : MonoBehaviour
                 cardTemplate,
                 this.gameObject.transform
             ));
-            cardObjects[i].gameObject.transform.position = new Vector3(handOffsetX, handOffsetY + cardSpacing * i, 0);
+            //cardObjects[i].gameObject.transform.position = new Vector3(handOffsetX, handOffsetY + cardSpacing * i, 0);
             cardObjects[i].GetComponent<InventoryCard>().SetCardRef(currentCard);
         }
     }
 
     private void Update()
     {
-        UpdateInventory();
+        //UpdateInventory();
         // Debug.Log(cardsInStock.Count);
     }
 }

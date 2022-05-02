@@ -50,7 +50,6 @@ public class PlayerData : MonoBehaviour
 
     public void Awake()
     {
-        Debug.Log(attackMod);
         statText.text = "Health: " + health + "\nAttack: " + attack + "\nSpeed : " + speed;
     }
 

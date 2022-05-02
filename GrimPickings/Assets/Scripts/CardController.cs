@@ -9,7 +9,7 @@ using Leap.Unity;
 
 public class CardController : MonoBehaviour
 {
-    [SerializeField] private GameObject GameController, cardUI, cardUINoCurse, heldInventory, storedInventory, equipbutton;
+    [SerializeField] private GameObject GameController, cardUI, cardUINoCurse, heldInventory, storedInventory, equipbutton, player1, player2;
     private bool equip = false;
     public bool collect = false;
     private int currentPart = 0;
@@ -133,7 +133,6 @@ public class CardController : MonoBehaviour
                 cardFront.transform.GetChild(8).GetComponent<UnityEngine.UI.Image>().sprite = cardDeck[i].img;
             }
             anim.SetBool("drawing", true);
-
             cardDeck.Remove(cardDeck[i]);
             count++;
             // start checking for hand motion, disable pinch to open menu for both players.
@@ -176,6 +175,7 @@ public class CardController : MonoBehaviour
             GameController.GetComponent<GameController>().currentPlayer = GameController.GetComponent<GameController>().player1;
             StartCoroutine(GameController.GetComponent<GameController>().TurnStart(1));
         }
+        collect = false;
     }
 
     private void HandCardPull(Hand hand)

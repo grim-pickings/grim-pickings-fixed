@@ -32,8 +32,10 @@ public class GameController : MonoBehaviour
 
     public int currentPlayerNum = 1;
 
-    public int currentTurnNum;
-    public Text startText; // used for showing countdown from 3, 2, 1 
+    public int currentTurnNumP1 = 0;
+    public int currentTurnNumP2 = 0;
+    public int turnCap = 5;
+    public TMP_Text startText; // used for showing countdown from 3, 2, 1 
 
     // get reference to player menus to disable / enable pinch motion.
     [SerializeField] private PlayerMenu p1Menu;
@@ -55,7 +57,7 @@ public class GameController : MonoBehaviour
     void Update()
     {
         //The combat scene is loaded after each player gets five turns - the currentTurnNum goes up by 1 every time a player moves so 5 x 2 = 10
-        if (currentTurnNum == 10)
+        if (currentTurnNumP1 > turnCap || currentTurnNumP2 > turnCap)
         {
             //startText.text = currentTurnNum.ToString();
             SceneManager.LoadScene("CombatPhase");
@@ -120,27 +122,9 @@ public class GameController : MonoBehaviour
         }
     }
 
-    //implement a way to end turns by running the TurnStart coroutine five times for demo?
-    public IEnumerator TurnEndDemo()
-    {
-        //add turnstart coroutine five times to make five turns for demo
-        yield return new WaitForSeconds(1.0f);
-        Debug.Log("turn end");
-    }
-
-    //implement a way to end turns by running the TurnStart coroutine five times for regular version?
-    public IEnumerator TurnEndRegular()
-    {
-        //add turnstart coroutine ten times to make ten turns for regular version
-        yield return new WaitForSeconds(1.0f);
-        Debug.Log("turn end");
-    }
-
     //Coroutine that controls everything that happnes at the begining of the turn with rolling for movement and displaying whose turn it is
     public IEnumerator TurnStart(int playerNum)
     {
-        currentPlayerNum = currentPlayerNum == 1 ? 2 : 1;
-
         float t = 0f;
         while (t < 1)
         {
@@ -165,17 +149,29 @@ public class GameController : MonoBehaviour
         {
             canvasRotator.transform.localRotation = Quaternion.Euler(0, 0, -90);
             TurnText.text = "Player 1's Turn";
-            currentTurnNum++;
-            Debug.Log("Player one has had: " + currentTurnNum + " turns. Scene will switch once # reaches 5 for both players.");
-            startText.text = currentTurnNum.ToString();
+            if(currentTurnNumP1 >= turnCap - 1)
+            {
+                startText.text = "LAST TURN!";
+            }
+            else
+            {
+                startText.text = (turnCap - currentTurnNumP1).ToString() + " Turns Left";
+            }
+            currentTurnNumP1++;
         }
         else if (playerNum == 2)
         {
             canvasRotator.transform.localRotation = Quaternion.Euler(0, 0, 90);
             TurnText.text = "Player 2's Turn";
-            currentTurnNum++;
-            Debug.Log("Player one has had: " + currentTurnNum + " turns. Scene will switch once # reaches 5 for both players.");
-            startText.text = currentTurnNum.ToString();
+            if (currentTurnNumP2 >= turnCap - 1)
+            {
+                startText.text = "LAST TURN!";
+            }
+            else
+            {
+                startText.text = (turnCap - currentTurnNumP2).ToString() + " Turns Left";
+            }
+            currentTurnNumP2++;
         }
         float a = 0f;
         while (a < 0.785)
@@ -183,6 +179,7 @@ public class GameController : MonoBehaviour
             a += 0.004f;
             backgroundShader.color = new Color(0f, 0f, 0f, a);
             TurnText.color = new Color(1f, 1f, 1f, a + 0.215f);
+            startText.color = new Color(1f, 1f, 1f, a + 0.215f);
             yield return new WaitForSeconds(0.0025f);
         }
 
@@ -215,6 +212,7 @@ public class GameController : MonoBehaviour
             a -= 0.004f;
             backgroundShader.color = new Color(0f, 0f, 0f, a);
             TurnText.color = new Color(1f, 1f, 1f, a);
+            startText.color = new Color(1f, 1f, 1f, a);
             yield return new WaitForSeconds(0.0025f);
         }
         TurnText.color = new Color(1f, 1f, 1f, 0f);

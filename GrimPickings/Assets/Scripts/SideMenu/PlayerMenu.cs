@@ -9,8 +9,9 @@ using Leap.Unity;
 public class PlayerMenu : MonoBehaviour
 {
     // reference to the player's actual menu
-    [SerializeField] private GameObject menu;
-    [SerializeField] private Inventory storedInventory;
+    [SerializeField] private GameObject menu, GameController;
+    [SerializeField] private Inventory storedInventoryP1;
+    [SerializeField] private Inventory storedInventoryP2;
     [SerializeField] private Inventory otherInventory;
 
     // controls whether pinch motion will open inventory menu or not. affected by other scripts that use hand motions.
@@ -84,7 +85,14 @@ public class PlayerMenu : MonoBehaviour
     {
         if (inventory == "Stored" || inventory == "stored")
         {
-            storedInventory.AddToInventory(newCard);
+            if(GameController.GetComponent<GameController>().currentPlayer == GameController.GetComponent<GameController>().player1)
+            {
+                storedInventoryP1.AddToInventory(newCard);
+            }
+            else if (GameController.GetComponent<GameController>().currentPlayer == GameController.GetComponent<GameController>().player2)
+            {
+                storedInventoryP2.AddToInventory(newCard);
+            }
         }
         else
         {
