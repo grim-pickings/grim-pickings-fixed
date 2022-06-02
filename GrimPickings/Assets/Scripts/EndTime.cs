@@ -24,14 +24,15 @@ public class EndTime : MonoBehaviour
     public IEnumerator GameOver(GameObject winner)
     {
         GameController.SetActive(false);
+        VictoryText.GetComponent<TMP_Text>().color = new Color(1f, 1f, 1f, 1f);
         if (winner == player1)
         {
-            VictoryText.GetComponent<TMP_Text>().text = "Player 1 Wins!";
+            VictoryText.GetComponent<TMP_Text>().text = DataStorage.p1Name + " Wins!";
             player2.SetActive(false);
         }
         if (winner == player2)
         {
-            VictoryText.GetComponent<TMP_Text>().text = "Player 2 Wins!";
+            VictoryText.GetComponent<TMP_Text>().text = DataStorage.p2Name + " Wins!";
             player1.SetActive(false);
         }
         float t = 0f;
@@ -54,6 +55,7 @@ public class EndTime : MonoBehaviour
 
         yield return new WaitForSeconds(3f);
 
-        SceneManager.LoadScene("TitleScreen");
+        GameObject loadingScreen = GameObject.Find("LoadingScreen");
+        StartCoroutine(loadingScreen.GetComponent<SceneLoader>().LoadAsync("TitleScreen"));
     }
 }

@@ -8,11 +8,13 @@ public class DiceScript : MonoBehaviour
 {
     [SerializeField] private GameObject d4, d6, d8, d10, d12, d20, controller;
     [SerializeField] private TMP_Text d4dicetext, d6dicetext, d8dicetext, d10dicetext, d12dicetext, d20dicetext;
+    int currentPlayer = 0;
 
     // Function used to roll a dice, simply call a number and what the roll is for (type) to tell it what to roll and what it's for
     // EXAMPLE: DiceRoll(8, "move"); This would roll a D8 for movement
-    public void DiceRoll(int diceNum, string type)
+    public void DiceRoll(int diceNum, string type, int player)
     {
+        currentPlayer = player;
         switch (diceNum)
         {
             case 4:
@@ -40,6 +42,14 @@ public class DiceScript : MonoBehaviour
     // the controller which is where all rolls should be called from
     IEnumerator diceRoll(GameObject dice, TMP_Text diceText, int diceNum, string type)
     {
+        if(currentPlayer == 1)
+        {
+            dice.transform.GetChild(0).GetComponent<Image>().color = DataStorage.p1Color;
+        }
+        else if (currentPlayer == 2)
+        {
+            dice.transform.GetChild(0).GetComponent<Image>().color = DataStorage.p2Color;
+        }
         dice.SetActive(true);
         float a = 0f;
         Image diceImg = dice.transform.GetChild(0).gameObject.GetComponent<Image>();

@@ -5,15 +5,21 @@ using UnityEngine;
 using UnityEngine.UI;
 using Leap;
 using Leap.Unity;
+using TMPro;
 
 public class PlayerMenu : MonoBehaviour
 {
     // reference to the player's actual menu
-    [SerializeField] private GameObject menu, GameController;
+    [SerializeField] private GameObject menu, GameController, notTurnText;
+    public GameObject button;
+    public bool opened;
     [SerializeField] private Inventory storedInventoryP1;
     [SerializeField] private Inventory storedInventoryP2;
     [SerializeField] private Inventory otherInventoryP1;
     [SerializeField] private Inventory otherInventoryP2;
+
+    public GameObject cardDestination, selectedCard, EquipButton;
+    public bool animating;
 
     // controls whether pinch motion will open inventory menu or not. affected by other scripts that use hand motions.
     // when the game is checking for any other hand motion, set this to false from that script. set back to true afterwards.
@@ -78,8 +84,51 @@ public class PlayerMenu : MonoBehaviour
     // toggle menu open/close
     public void toggleMenu()
     {
-        // changes whether it's active based on its current state
-        menu.SetActive(!menu.activeSelf);
+        opened = !opened;
+        if (opened == true)
+        {
+            this.GetComponent<Animator>().SetBool("open", true);
+        }
+        else
+        {
+            animating = true;
+            StartCoroutine(Close());
+        }
+        button.transform.GetChild(0).Rotate(new Vector3(0, 0, 180));
+    }
+
+    IEnumerator Close()
+    {
+        EquipButton.GetComponent<CanvasGroup>().alpha = 0;
+        EquipButton.GetComponent<Button>().enabled = false;
+        if (selectedCard != null)
+        {
+            StartCoroutine(selectedCard.GetComponent<InventoryCard>().Shrink());
+            yield return new WaitForSeconds(0.75f);
+        }
+        this.GetComponent<Animator>().SetBool("open", false);
+        animating = false;
+    }
+
+    public IEnumerator NotTurn()
+    {
+        float a = 0;
+        while(a < 1)
+        {
+            a += 0.05f;
+            notTurnText.GetComponent<TMP_Text>().color = new Color(1f, 1f, 1f, a);
+            yield return new WaitForSeconds(0.01f);
+        }
+        a = 1;
+
+        yield return new WaitForSeconds(1f);
+
+        while (a > 0)
+        {
+            a -= 0.05f;
+            notTurnText.GetComponent<TMP_Text>().color = new Color(1f, 1f, 1f, a);
+            yield return new WaitForSeconds(0.01f);
+        }
     }
 
     public void AddCard(Deck.Card newCard, string inventory)
@@ -107,5 +156,29 @@ public class PlayerMenu : MonoBehaviour
             }
         }
     }
-
+    public void AddItemCard(Deck.ItemCard newCard, string inventory)
+    {
+        if (inventory == "Stored" || inventory == "stored")
+        {
+            if (GameController.GetComponent<GameControllerCombat>().currentPlayer == GameController.GetComponent<GameControllerCombat>().player1)
+            {
+                storedInventoryP1.AddItemToInventory(newCard, GameController.GetComponent<GameControllerCombat>().currentPlayer);
+            }
+            else if (GameController.GetComponent<GameControllerCombat>().currentPlayer == GameController.GetComponent<GameControllerCombat>().player2)
+            {
+                storedInventoryP2.AddItemToInventory(newCard, GameController.GetComponent<GameControllerCombat>().currentPlayer);
+            }
+        }
+        else
+        {
+            if (GameController.GetComponent<GameControllerCombat>().currentPlayer == GameController.GetComponent<GameControllerCombat>().player1)
+            {
+                otherInventoryP1.AddItemToInventory(newCard, GameController.GetComponent<GameControllerCombat>().currentPlayer);
+            }
+            else if (GameController.GetComponent<GameControllerCombat>().currentPlayer == GameController.GetComponent<GameControllerCombat>().player2)
+            {
+                otherInventoryP2.AddItemToInventory(newCard, GameController.GetComponent<GameControllerCombat>().currentPlayer);
+            }
+        }
+    }
 }

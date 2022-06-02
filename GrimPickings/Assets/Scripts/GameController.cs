@@ -11,17 +11,20 @@ using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
-    [SerializeField] private LeapServiceProvider leapController;
+    [SerializeField] private LeapServiceProvider leapControllerP1, leapControllerP2;
     [SerializeField] private UnityEngine.UI.Image backgroundShader;
     [SerializeField] private TMP_Text TurnText;
-    [SerializeField] private GameObject gridHolder, dice, canvasRotator, cardController;
+    [SerializeField] private GameObject gridHolder, dice, canvasRotator, cardController, P1EquipDestination, P2EquipDestination, SceneShader, ReadyButton1, ReadyButton2, p1Countdown, p2Countdown;
     [SerializeField] private Camera cameraMain;
     [HideInInspector] public Vector3 camPosMain;
-    [HideInInspector] public Color movementColor = new Color(1f, 1f, 1f, 0.5f);
+    public Color movementColor = new Color(1f, 1f, 1f, 0.5f);
 
     // controls checking for hand dice roll motion and the motion steps for it.
     private bool checkForHandRoll = false;
     private bool checkForHandRollMoveOne = false;
+
+    private bool p1Ready = false;
+    private bool p2Ready = false;
 
     public List<GameObject> rangeHexes = new List<GameObject>();
     public GameObject currentPlayer, player1, player2, rollButton;
@@ -34,12 +37,12 @@ public class GameController : MonoBehaviour
 
     public int currentTurnNumP1 = 0;
     public int currentTurnNumP2 = 0;
-    private int turnCap = 2;
+    public int turnCap = 1;
     public TMP_Text startText; // used for showing countdown from 3, 2, 1 
 
     // get reference to player menus to disable / enable pinch motion.
-    [SerializeField] private PlayerMenu p1Menu;
-    [SerializeField] private PlayerMenu p2Menu;
+    public PlayerMenu p1Menu;
+    public PlayerMenu p2Menu;
 
     // reference to first hand being tracked in frame.
     private int firstHandID;
@@ -56,20 +59,6 @@ public class GameController : MonoBehaviour
     //lit up with the movement color then the player moves to that tile and it starts the other players turn
     void Update()
     {
-        //The combat scene is loaded after each player gets five turns - the currentTurnNum goes up by 1 every time a player moves so 5 x 2 = 10
-        if (currentTurnNumP1 > turnCap || currentTurnNumP2 > turnCap)
-        {
-            //startText.text = currentTurnNum.ToString();
-            SceneManager.LoadScene("CombatPhase");
-            Debug.Log("Each player got 5 turns in demo mode so scene was switched to combat phase");
-        }
-
-        //The combat scene is loaded after each player gets ten turns - the currentTurnNum goes up by 1 every time a player moves so 10 x 2 = 20
-        // if (currentTurnNum == 20)
-        // {
-        //     SceneManager.LoadScene("CombatPhase");
-        //     Debug.Log("Each player got 5 turns in demo mode so scene was switched to combat phase");
-        // }
 
         if (Input.GetMouseButtonDown(0))
         {
@@ -87,23 +76,49 @@ public class GameController : MonoBehaviour
             // if a leap service provider is connected and a hand is being tracked, 
             // get an ID reference to the first entered tracked hand, check for conditions. 
             // if two hands are tracked, just watch for conditions on the first entered hand.
-            if (leapController && leapController.CurrentFrame.Hands.Count == 1)
+            if (leapControllerP1 && leapControllerP1.CurrentFrame.Hands.Count == 1)
             {
-                firstHandID = leapController.CurrentFrame.Hands[0].Id;
-                HandDiceRoll(leapController.CurrentFrame.Hand(firstHandID));
+                firstHandID = leapControllerP1.CurrentFrame.Hands[0].Id;
+                HandDiceRollP1(leapControllerP1.CurrentFrame.Hand(firstHandID));
             }
-            else if (leapController && leapController.CurrentFrame.Hands.Count == 2)
+            else if (leapControllerP1 && leapControllerP1.CurrentFrame.Hands.Count == 2)
             {
-                HandDiceRoll(leapController.CurrentFrame.Hand(firstHandID));
+                HandDiceRollP1(leapControllerP1.CurrentFrame.Hand(firstHandID));
             }
         }
         // if both hands entered at the same time, just track hand 0. when two hands are being tracked, it's the left hand.
         catch (Exception e)
         {
-            if (leapController && leapController.CurrentFrame.Hands.Count > 0)
+            if (leapControllerP1 && leapControllerP1.CurrentFrame.Hands.Count > 0)
             {
-                Hand hand = leapController.CurrentFrame.Hands[0];
-                HandDiceRoll(hand);
+                Hand hand = leapControllerP1.CurrentFrame.Hands[0];
+                HandDiceRollP1(hand);
+            }
+        }
+
+        // having both hands enter at the same time is unlikely but doable and causes an object reference error, so need to try catch this.
+        try
+        {
+            // if a leap service provider is connected and a hand is being tracked, 
+            // get an ID reference to the first entered tracked hand, check for conditions. 
+            // if two hands are tracked, just watch for conditions on the first entered hand.
+            if (leapControllerP2 && leapControllerP2.CurrentFrame.Hands.Count == 1)
+            {
+                firstHandID = leapControllerP2.CurrentFrame.Hands[0].Id;
+                HandDiceRollP2(leapControllerP2.CurrentFrame.Hand(firstHandID));
+            }
+            else if (leapControllerP2 && leapControllerP2.CurrentFrame.Hands.Count == 2)
+            {
+                HandDiceRollP2(leapControllerP2.CurrentFrame.Hand(firstHandID));
+            }
+        }
+        // if both hands entered at the same time, just track hand 0. when two hands are being tracked, it's the left hand.
+        catch (Exception e)
+        {
+            if (leapControllerP2 && leapControllerP2.CurrentFrame.Hands.Count > 0)
+            {
+                Hand hand = leapControllerP2.CurrentFrame.Hands[0];
+                HandDiceRollP2(hand);
             }
         }
     }
@@ -148,7 +163,7 @@ public class GameController : MonoBehaviour
         if (playerNum == 1)
         {
             canvasRotator.transform.localRotation = Quaternion.Euler(0, 0, -90);
-            TurnText.text = "Player 1's Turn";
+            TurnText.text = DataStorage.p1Name + "'s Turn";
             if(currentTurnNumP1 >= turnCap - 1)
             {
                 startText.text = "LAST TURN!";
@@ -158,11 +173,12 @@ public class GameController : MonoBehaviour
                 startText.text = (turnCap - currentTurnNumP1).ToString() + " Turns Left";
             }
             currentTurnNumP1++;
+            currentPlayerNum = 1;
         }
         else if (playerNum == 2)
         {
             canvasRotator.transform.localRotation = Quaternion.Euler(0, 0, 90);
-            TurnText.text = "Player 2's Turn";
+            TurnText.text = DataStorage.p2Name + "'s Turn";
             if (currentTurnNumP2 >= turnCap - 1)
             {
                 startText.text = "LAST TURN!";
@@ -172,6 +188,7 @@ public class GameController : MonoBehaviour
                 startText.text = (turnCap - currentTurnNumP2).ToString() + " Turns Left";
             }
             currentTurnNumP2++;
+            currentPlayerNum = 2;
         }
         float a = 0f;
         while (a < 0.785)
@@ -188,8 +205,14 @@ public class GameController : MonoBehaviour
         checkForHandRoll = true;
 
         // disable pinch motion. 
-        p1Menu.useHandMotion = false;
-        p2Menu.useHandMotion = false;
+        if(currentPlayer == player1)
+        {
+            p1Menu.useHandMotion = false;
+        }
+        else if(currentPlayer == player2)
+        {
+            p2Menu.useHandMotion = false;
+        }
 
         while (diceRolled == false)
         {
@@ -204,7 +227,7 @@ public class GameController : MonoBehaviour
         p1Menu.useHandMotion = true;
         p2Menu.useHandMotion = true;
         rollButton.SetActive(false);
-        dice.GetComponent<DiceScript>().DiceRoll(8, "move");
+        dice.GetComponent<DiceScript>().DiceRoll(8, "move", currentPlayerNum);
         diceRolled = false;
         yield return new WaitForSeconds(7f);
         while (a > 0)
@@ -223,44 +246,91 @@ public class GameController : MonoBehaviour
         diceRolled = true;
     }
 
-    private void HandDiceRoll(Hand hand)
+    private void HandDiceRollP1(Hand hand)
     {
-        // don't check when not waiting for a hand roll.
-        if (!checkForHandRoll) return;
-
-        // get fingers.
-        Finger thumb = hand.Fingers[0];
-        Finger index = hand.Fingers[1];
-        Finger middle = hand.Fingers[2];
-        Finger ring = hand.Fingers[3];
-        Finger pinky = hand.Fingers[4];
-
-        if (!thumb.IsExtended
-            && !index.IsExtended
-            && !middle.IsExtended
-            && !ring.IsExtended
-            && !pinky.IsExtended
-            && !checkForHandRollMoveOne
-        )
+        if(currentPlayer == player1)
         {
-            // put some visual indicator for these steps?
-            Debug.Log("hand is closed");
-            // hand is closed.
-            checkForHandRollMoveOne = true;
+            // don't check when not waiting for a hand roll.
+            if (!checkForHandRoll) return;
+
+            // get fingers.
+            Finger thumb = hand.Fingers[0];
+            Finger index = hand.Fingers[1];
+            Finger middle = hand.Fingers[2];
+            Finger ring = hand.Fingers[3];
+            Finger pinky = hand.Fingers[4];
+
+            if (!thumb.IsExtended
+                && !index.IsExtended
+                && !middle.IsExtended
+                && !ring.IsExtended
+                && !pinky.IsExtended
+                && !checkForHandRollMoveOne
+            )
+            {
+                // put some visual indicator for these steps?
+                Debug.Log("hand is closed");
+                // hand is closed.
+                checkForHandRollMoveOne = true;
+            }
+            if (thumb.IsExtended
+                && index.IsExtended
+                && middle.IsExtended
+                && ring.IsExtended
+                && pinky.IsExtended
+                && checkForHandRollMoveOne
+            )
+            {
+                Debug.Log("hand is opened, dice rolled");
+                // hand is opened, dice is rolled.
+                checkForHandRollMoveOne = false;
+                checkForHandRoll = false;
+                diceRolled = true;
+            }
         }
-        if (thumb.IsExtended
-            && index.IsExtended
-            && middle.IsExtended
-            && ring.IsExtended
-            && pinky.IsExtended
-            && checkForHandRollMoveOne
-        )
+    }
+
+    private void HandDiceRollP2(Hand hand)
+    {
+        if (currentPlayer == player2)
         {
-            Debug.Log("hand is opened, dice rolled");
-            // hand is opened, dice is rolled.
-            checkForHandRollMoveOne = false;
-            checkForHandRoll = false;
-            diceRolled = true;
+            // don't check when not waiting for a hand roll.
+            if (!checkForHandRoll) return;
+
+            // get fingers.
+            Finger thumb = hand.Fingers[0];
+            Finger index = hand.Fingers[1];
+            Finger middle = hand.Fingers[2];
+            Finger ring = hand.Fingers[3];
+            Finger pinky = hand.Fingers[4];
+
+            if (!thumb.IsExtended
+                && !index.IsExtended
+                && !middle.IsExtended
+                && !ring.IsExtended
+                && !pinky.IsExtended
+                && !checkForHandRollMoveOne
+            )
+            {
+                // put some visual indicator for these steps?
+                Debug.Log("hand is closed");
+                // hand is closed.
+                checkForHandRollMoveOne = true;
+            }
+            if (thumb.IsExtended
+                && index.IsExtended
+                && middle.IsExtended
+                && ring.IsExtended
+                && pinky.IsExtended
+                && checkForHandRollMoveOne
+            )
+            {
+                Debug.Log("hand is opened, dice rolled");
+                // hand is opened, dice is rolled.
+                checkForHandRollMoveOne = false;
+                checkForHandRoll = false;
+                diceRolled = true;
+            }
         }
     }
 
@@ -305,10 +375,11 @@ public class GameController : MonoBehaviour
     //Coroutine that places all the gravesites one by one at the beginning of the game
     IEnumerator PlaceDigsites()
     {
+        yield return new WaitForSeconds(0.5f);
         int i = 0;
         float interval = 0.05f;
         //Number of mounds
-        while (i <= numMounds)
+        while (i < numMounds)
         {
             int site = UnityEngine.Random.Range(0, gridHolder.transform.childCount);
             if (gridHolder.transform.GetChild(site).GetComponent<HexScript>().nearHexes.Count < 5)
@@ -335,7 +406,7 @@ public class GameController : MonoBehaviour
         }
         i = 0;
         //number of graves
-        while (i <= numGraves)
+        while (i < numGraves)
         {
             int site = UnityEngine.Random.Range(0, gridHolder.transform.childCount);
             if (gridHolder.transform.GetChild(site).GetComponent<HexScript>().nearHexes.Count < 6)
@@ -362,7 +433,7 @@ public class GameController : MonoBehaviour
         }
         i = 0;
         //number of mausoleums
-        while (i <= numMausoleums)
+        while (i < numMausoleums)
         {
             int site = UnityEngine.Random.Range(0, gridHolder.transform.childCount);
             if (gridHolder.transform.GetChild(site).GetComponent<HexScript>().nearHexes.Count < 6)
@@ -387,6 +458,7 @@ public class GameController : MonoBehaviour
             i++;
             yield return new WaitForSeconds(interval);
         }
+        yield return new WaitForSeconds(1f);
         StartCoroutine(TurnStart(1));
     }
 
@@ -424,7 +496,9 @@ public class GameController : MonoBehaviour
             //Revert(1) will revert the last child which is reserved for the movement and are lighting up
             rangeHexes[i].GetComponent<HexScript>().Revert(1);
         }
-
+        rangeHexes = new List<GameObject>();
+        currentPlayer.GetComponent<PlayerMovement>().currentTile.GetComponent<HexScript>().type = "";
+        currentPlayer.GetComponent<PlayerMovement>().currentTile.transform.GetChild(currentPlayer.GetComponent<PlayerMovement>().currentTile.transform.childCount - 1).GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0f);
         //Checks to see if the player is at their destination or not
         while (currentPlayer.transform.position.x >= destination.transform.position.x + 0.01f || currentPlayer.transform.position.x <= destination.transform.position.x - 0.01f ||
             currentPlayer.transform.position.y >= destination.transform.position.y + 0.01f || currentPlayer.transform.position.y <= destination.transform.position.y - 0.01f)
@@ -442,9 +516,141 @@ public class GameController : MonoBehaviour
             StartCoroutine(cardController.GetComponent<CardController>().digging(tileType));
             yield break;
         }
-
         currentPlayer.GetComponent<PlayerMovement>().FindTile();
-        if (currentPlayer == player1) { currentPlayer = player2; StartCoroutine(TurnStart(2)); }
-        else { currentPlayer = player1; StartCoroutine(TurnStart(1)); }
+        if (currentTurnNumP1 >= turnCap && currentTurnNumP2 >= turnCap)
+        {
+            StartCoroutine(equipScene());
+        }
+        else
+        {
+            if (currentPlayer == player1) { currentPlayer = player2; StartCoroutine(TurnStart(2)); }
+            else { currentPlayer = player1; StartCoroutine(TurnStart(1)); }
+        }
+    }
+
+    public IEnumerator equipScene()
+    {
+        if(p1Menu.opened == true)
+        {
+            p1Menu.toggleMenu();
+        }
+        if (p2Menu.opened == true)
+        {
+            p2Menu.toggleMenu();
+        }
+        while (player1.transform.position.x >= P1EquipDestination.transform.position.x + 0.01f || player1.transform.position.x <= P1EquipDestination.transform.position.x - 0.01f ||
+            player1.transform.position.y >= P1EquipDestination.transform.position.y + 0.01f || player1.transform.position.y <= P1EquipDestination.transform.position.y - 0.01f ||
+            player1.transform.position.z >= P1EquipDestination.transform.position.z + 0.01f || player1.transform.position.z <= P1EquipDestination.transform.position.z - 0.01f &&
+            player2.transform.position.x >= P2EquipDestination.transform.position.x + 0.01f || player2.transform.position.x <= P2EquipDestination.transform.position.x - 0.01f ||
+            player2.transform.position.y >= P2EquipDestination.transform.position.y + 0.01f || player2.transform.position.y <= P2EquipDestination.transform.position.y - 0.01f ||
+            player2.transform.position.z >= P2EquipDestination.transform.position.z + 0.01f || player2.transform.position.z <= P2EquipDestination.transform.position.z - 0.01f)
+        {
+            player1.transform.position = Vector3.Lerp(player1.transform.position, P1EquipDestination.transform.position, Time.deltaTime * 8f);
+            player2.transform.position = Vector3.Lerp(player2.transform.position, P2EquipDestination.transform.position, Time.deltaTime * 8f);
+            yield return null;
+        }
+        player1.transform.position = P1EquipDestination.transform.position;
+        player2.transform.position = P2EquipDestination.transform.position;
+        p1Menu.toggleMenu();
+        p2Menu.toggleMenu();
+        p1Menu.button.SetActive(false);
+        p2Menu.button.SetActive(false);
+        SceneShader.SetActive(true);
+        float a = 0f;
+        while (a < 0.785)
+        {
+            a += 0.025f;
+            SceneShader.GetComponent<SpriteRenderer>().color = new Color(0f, 0f, 0f, a);
+            yield return new WaitForSeconds(0.01f);
+        }
+        ReadyButton1.SetActive(true);
+        ReadyButton2.SetActive(true);
+        while (ReadyButton1.GetComponent<CanvasGroup>().alpha < 1)
+        {
+            ReadyButton1.GetComponent<CanvasGroup>().alpha += 0.025f;
+            ReadyButton2.GetComponent<CanvasGroup>().alpha += 0.025f;
+            yield return new WaitForSeconds(0.01f);
+        }
+        ReadyButton1.GetComponent<CanvasGroup>().alpha = 1f;
+        ReadyButton2.GetComponent<CanvasGroup>().alpha = 1f;
+
+        int countdown = 3;
+
+        while(countdown > 0)
+        {
+            countdown = 3;
+            p1Countdown.GetComponent<TMP_Text>().text = "";
+            p2Countdown.GetComponent<TMP_Text>().text = "";
+            p1Countdown.GetComponent<TMP_Text>().color = new Color(1f, 1f, 1f, 1f);
+            p2Countdown.GetComponent<TMP_Text>().color = new Color(1f, 1f, 1f, 1f);
+            while (p1Ready == false || p2Ready == false)
+            {
+                yield return null;
+            }
+
+            while(p1Ready == true && p2Ready == true && countdown > 0)
+            {
+                p1Countdown.GetComponent<TMP_Text>().text = countdown.ToString();
+                p2Countdown.GetComponent<TMP_Text>().text = countdown.ToString();
+                a = 1f;
+                while (a > 0 && p1Ready == true && p2Ready == true)
+                {
+                    a -= 1 * Time.deltaTime;
+                    p1Countdown.GetComponent<TMP_Text>().color = new Color(1f, 1f, 1f, a);
+                    p2Countdown.GetComponent<TMP_Text>().color = new Color(1f, 1f, 1f, a);
+                    yield return null;
+                }
+                if(a <= 0)
+                {
+                    countdown--;
+                }
+            }
+            yield return null;
+        }
+
+        p1Countdown.GetComponent<TMP_Text>().text = "0";
+        p2Countdown.GetComponent<TMP_Text>().text = "0";
+        p1Countdown.GetComponent<TMP_Text>().color = new Color(1f, 1f, 1f, 1f);
+        p2Countdown.GetComponent<TMP_Text>().color = new Color(1f, 1f, 1f, 1f);
+
+        GameObject loadingScreen = GameObject.Find("LoadingScreen");
+        StartCoroutine(loadingScreen.GetComponent<SceneLoader>().LoadAsync("CombatPhase"));
+    }
+
+    public void readyButton(int player)
+    {
+        switch (player)
+        {
+            case 1:
+                switch (p1Ready)
+                {
+                    case true:
+                        ReadyButton1.GetComponent<UnityEngine.UI.Image>().color = new Color(1f, 1f, 1f, 1f);
+                        ReadyButton1.transform.GetChild(0).GetComponent<Text>().text = "Ready?";
+                        p1Ready = false;
+                        break;
+                    case false:
+                        ReadyButton1.GetComponent<UnityEngine.UI.Image>().color = new Color(0f, 1f, 0f, 1f);
+                        ReadyButton1.transform.GetChild(0).GetComponent<Text>().text = "Ready";
+                        p1Ready = true;
+                        break;
+                }
+                break;
+            case 2:
+                switch (p2Ready)
+                {
+                    case true:
+                        ReadyButton2.GetComponent<UnityEngine.UI.Image>().color = new Color(1f, 1f, 1f, 1f);
+                        ReadyButton2.transform.GetChild(0).GetComponent<Text>().text = "Ready?";
+                        p2Ready = false;
+                        break;
+                    case false:
+                        ReadyButton2.GetComponent<UnityEngine.UI.Image>().color = new Color(0f, 1f, 0f, 1f);
+                        ReadyButton2.transform.GetChild(0).GetComponent<Text>().text = "Ready";
+                        p2Ready = true;
+                        break;
+                }
+                break;
+        }
     }
 }

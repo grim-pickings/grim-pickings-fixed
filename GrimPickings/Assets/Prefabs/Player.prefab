@@ -49,6 +49,8 @@ MonoBehaviour:
   health: 50
   attack: 5
   speed: 5
+  tempAttack: 0
+  tempSpeed: 0
   attackMod: 0
   speedMod: 0
   armSide: Left
@@ -363,7 +365,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 1
-  m_Size: {x: 300, y: 300}
+  m_Size: {x: 20.48, y: 20.48}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1

@@ -5,6 +5,7 @@ using UnityEngine;
 public class HexScript : MonoBehaviour
 {
     [SerializeField] private GameObject controller, hex;
+    [SerializeField] private Sprite MoundSprite, GraveSprite, MausoleumSprite;
     public GameObject gridHolder;
     public string type;
     public bool flash;
@@ -81,7 +82,7 @@ public class HexScript : MonoBehaviour
                     directionRange = new int[] { direction - 1, direction, direction + 1 };
                 }
 
-                if (((GameObject)nearHexes[i][0]) != player.GetComponent<PlayerMovement>().currentTile && 
+                if (((GameObject)nearHexes[i][0]).GetComponent<HexScript>().type != "playerSpace" && 
                     (((int)nearHexes[i][1]) == directionRange[0] ||
                     ((int)nearHexes[i][1]) == directionRange[1] ||
                     ((int)nearHexes[i][1]) == directionRange[2] ||
@@ -117,15 +118,26 @@ public class HexScript : MonoBehaviour
     public void CenterHex()
     {
         type = "Center";
-        this.transform.GetChild(1).GetComponent<SpriteRenderer>().color = new Color(0f, 1f, 0.5f, 1f);
+        //this.transform.GetChild(1).GetComponent<SpriteRenderer>().color = new Color(0f, 1f, 0.5f, 1f);
         this.transform.GetChild(1).GetComponent<SpriteRenderer>().sortingOrder = -1;
         Instantiate(hex, this.transform.position, Quaternion.identity, this.transform);
         for (int i = 0; i < nearHexes.Count; i++)
         {
             ((GameObject)nearHexes[i][0]).GetComponent<HexScript>().type = "Center";
-            ((GameObject)nearHexes[i][0]).transform.GetChild(1).GetComponent<SpriteRenderer>().color = new Color(0f, 1f, 0.5f, 1f);
+            //((GameObject)nearHexes[i][0]).transform.GetChild(1).GetComponent<SpriteRenderer>().color = new Color(0f, 1f, 0.5f, 1f);
             ((GameObject)nearHexes[i][0]).transform.GetChild(1).GetComponent<SpriteRenderer>().sortingOrder = -1;
             Instantiate(hex, ((GameObject)nearHexes[i][0]).transform.position, Quaternion.identity, ((GameObject)nearHexes[i][0]).transform);
+        }
+        for (int i = 0; i < nearHexes.Count; i++)
+        {
+            List<ArrayList> currentNearHexes = ((GameObject)nearHexes[i][0]).GetComponent<HexScript>().nearHexes;
+            for (int j = 0; j < currentNearHexes.Count; j++)
+            {
+                if (((GameObject)currentNearHexes[j][0]).GetComponent<HexScript>().type == "")
+                {
+                    ((GameObject)currentNearHexes[j][0]).GetComponent<HexScript>().type = "noPlace";
+                }
+            }
         }
     }
 
@@ -134,44 +146,42 @@ public class HexScript : MonoBehaviour
     public void MoundHex()
     {
         type = "Mound";
-        this.transform.GetChild(1).GetComponent<SpriteRenderer>().color = new Color(0.42f, 0.33f, 0.35f, 1f);
-        this.transform.GetChild(1).GetComponent<SpriteRenderer>().sortingOrder = -1;
+        this.transform.GetChild(1).GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 1f);
+        this.transform.GetChild(1).GetComponent<SpriteRenderer>().sprite = MoundSprite;
+        this.transform.GetChild(1).GetComponent<SpriteRenderer>().sortingOrder = 1;
         Instantiate(hex, this.transform.position, Quaternion.identity, this.transform);
         digGroup.Add(this.gameObject);
-        float chanceNum = Random.Range(0f, 1.0f);
-        if (chanceNum <= .5f)
+        for (int i = 0; i < 2; i++)
         {
-            for (int i = 0; i < 2; i++)
-            {
-                ((GameObject)nearHexes[i][0]).GetComponent<HexScript>().type = "Mound";
-                ((GameObject)nearHexes[i][0]).transform.GetChild(1).GetComponent<SpriteRenderer>().color = new Color(0.42f, 0.33f, 0.35f, 1f);
-                ((GameObject)nearHexes[i][0]).transform.GetChild(1).GetComponent<SpriteRenderer>().sortingOrder = -1;
-                Instantiate(hex, ((GameObject)nearHexes[i][0]).transform.position, Quaternion.identity, ((GameObject)nearHexes[i][0]).transform);
-                digGroup.Add(((GameObject)nearHexes[i][0]));
-            }
-        }
-        else
-        {
-            for (int i = nearHexes.Count - 1; i > nearHexes.Count - 3; i--)
-            {
-                ((GameObject)nearHexes[i][0]).GetComponent<HexScript>().type = "Mound";
-                ((GameObject)nearHexes[i][0]).transform.GetChild(1).GetComponent<SpriteRenderer>().color = new Color(0.42f, 0.33f, 0.35f, 1f);
-                ((GameObject)nearHexes[i][0]).transform.GetChild(1).GetComponent<SpriteRenderer>().sortingOrder = -1;
-                Instantiate(hex, ((GameObject)nearHexes[i][0]).transform.position, Quaternion.identity, ((GameObject)nearHexes[i][0]).transform);
-                digGroup.Add(((GameObject)nearHexes[i][0]));
-            }
+            ((GameObject)nearHexes[i][0]).GetComponent<HexScript>().type = "Mound";
+            ((GameObject)nearHexes[i][0]).transform.GetChild(1).GetComponent<SpriteRenderer>().color = new Color(0.42f, 0.33f, 0.35f, 1f);
+            ((GameObject)nearHexes[i][0]).transform.GetChild(1).GetComponent<SpriteRenderer>().sortingOrder = -1;
+            Instantiate(hex, ((GameObject)nearHexes[i][0]).transform.position, Quaternion.identity, ((GameObject)nearHexes[i][0]).transform);
+            digGroup.Add(((GameObject)nearHexes[i][0]));
         }
         for (int i = 0; i < digGroup.Count; i++)
         {
             digGroup[i].GetComponent<HexScript>().digGroup = digGroup;
+        }
+        for (int i = 0; i < digGroup.Count; i++)
+        {
+            List<ArrayList> currentNearHexes = digGroup[i].GetComponent<HexScript>().nearHexes;
+            for (int j = 0; j < currentNearHexes.Count; j++)
+            {
+                if (((GameObject)currentNearHexes[j][0]).GetComponent<HexScript>().type == "")
+                {
+                    ((GameObject)currentNearHexes[j][0]).GetComponent<HexScript>().type = "noPlace";
+                }
+            }
         }
     }
 
     public void GraveHex()
     {
         type = "Grave";
-        this.transform.GetChild(1).GetComponent<SpriteRenderer>().color = new Color(0.28f, 0.33f, 0.46f, 1f);
-        this.transform.GetChild(1).GetComponent<SpriteRenderer>().sortingOrder = -1;
+        this.transform.GetChild(1).GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 1f);
+        this.transform.GetChild(1).GetComponent<SpriteRenderer>().sprite = GraveSprite;
+        this.transform.GetChild(1).GetComponent<SpriteRenderer>().sortingOrder = 1;
         Instantiate(hex, this.transform.position, Quaternion.identity, this.transform);
         digGroup.Add(this.gameObject);
         for (int i = 0; i < 3; i++)
@@ -186,13 +196,25 @@ public class HexScript : MonoBehaviour
         {
             digGroup[i].GetComponent<HexScript>().digGroup = digGroup;
         }
+        for (int i = 0; i < digGroup.Count; i++)
+        {
+            List<ArrayList> currentNearHexes = digGroup[i].GetComponent<HexScript>().nearHexes;
+            for (int j = 0; j < currentNearHexes.Count; j++)
+            {
+                if(((GameObject)currentNearHexes[j][0]).GetComponent<HexScript>().type == "")
+                {
+                    ((GameObject)currentNearHexes[j][0]).GetComponent<HexScript>().type = "noPlace";
+                }
+            }
+        }
     }
 
     public void MausoleumHex()
     {
         type = "Mausoleum";
-        this.transform.GetChild(1).GetComponent<SpriteRenderer>().color = new Color(0.52f, 0.52f, 0.36f, 1f);
-        this.transform.GetChild(1).GetComponent<SpriteRenderer>().sortingOrder = -1;
+        this.transform.GetChild(1).GetComponent<SpriteRenderer>().color = new Color(1f,1f, 1f, 1f);
+        this.transform.GetChild(1).GetComponent<SpriteRenderer>().sprite = MausoleumSprite;
+        this.transform.GetChild(1).GetComponent<SpriteRenderer>().sortingOrder = 1;
         Instantiate(hex, this.transform.position, Quaternion.identity, this.transform);
         digGroup.Add(this.gameObject);
         for (int i = 0; i < nearHexes.Count; i++)
@@ -206,6 +228,17 @@ public class HexScript : MonoBehaviour
         for (int i = 0; i < digGroup.Count; i++)
         {
             digGroup[i].GetComponent<HexScript>().digGroup = digGroup;
+        }
+        for (int i = 0; i < digGroup.Count; i++)
+        {
+            List<ArrayList> currentNearHexes = digGroup[i].GetComponent<HexScript>().nearHexes;
+            for (int j = 0; j < currentNearHexes.Count; j++)
+            {
+                if (((GameObject)currentNearHexes[j][0]).GetComponent<HexScript>().type == "")
+                {
+                    ((GameObject)currentNearHexes[j][0]).GetComponent<HexScript>().type = "noPlace";
+                }
+            }
         }
     }
 

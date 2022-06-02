@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
-    [SerializeField] private GameObject cardTemplate, GameController;
+    [SerializeField] private GameObject cardTemplate, itemCardTemplate, GameController;
     private List<Deck.Card> cardsInStock = new List<Deck.Card>();
+    private List<Deck.ItemCard> itemCardsInStock = new List<Deck.ItemCard>();
     [SerializeField] private Sprite defaultSprite;
     [SerializeField] private int cardSpacing = 50;
     [SerializeField] private float handOffsetY = 540f;
@@ -26,6 +27,18 @@ public class Inventory : MonoBehaviour
     {
         cardsInStock.Remove(card);
         UpdateInventory(player);
+    }
+
+    public void AddItemToInventory(Deck.ItemCard newCard, GameObject player)
+    {
+        itemCardsInStock.Add(newCard);
+        UpdateItemInventory(player);
+    }
+
+    public void RemoveItemFromInventory(Deck.ItemCard card, GameObject player)
+    {
+        itemCardsInStock.Remove(card);
+        UpdateItemInventory(player);
     }
 
     public void Start()
@@ -101,6 +114,40 @@ public class Inventory : MonoBehaviour
             ));
             //cardObjects[i].gameObject.transform.position = new Vector3(handOffsetX, handOffsetY + cardSpacing * i, 0);
             cardObjects[i].GetComponent<InventoryCard>().SetCardRef(currentCard, player);
+        }
+    }
+
+    private void UpdateItemInventory(GameObject player)
+    {
+        //if (cardObjects.Count == 0 || lastInventoryCount == cardObjects.Count)
+        //{
+        //return;
+        //}
+        lastInventoryCount = cardObjects.Count;
+        // Clean up old card objects
+        cardObjects.ForEach(delegate (GameObject cardObj)
+        {
+            Destroy(cardObj.gameObject);
+        });
+        cardObjects.Clear();
+        if (player == GameController.GetComponent<GameControllerCombat>().player1)
+        {
+            DataStorage.player1ItemInventory = itemCardsInStock;
+        }
+        else if (player == GameController.GetComponent<GameControllerCombat>().player2)
+        {
+            DataStorage.player2ItemInventory = itemCardsInStock;
+        }
+        // Add new card object based on the current inventory
+        for (int i = 0; i < itemCardsInStock.Count; i++)
+        {
+            Deck.ItemCard currentCard = itemCardsInStock[i];
+            cardObjects.Add(Instantiate(
+                itemCardTemplate,
+                this.gameObject.transform
+            ));
+            //cardObjects[i].gameObject.transform.position = new Vector3(handOffsetX, handOffsetY + cardSpacing * i, 0);
+            cardObjects[i].GetComponent<InventoryCard>().SetItemCardRef(currentCard, player);
         }
     }
 

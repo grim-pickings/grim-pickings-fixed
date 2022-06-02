@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: b85b60b45a1dc7a4d82df6d790827bef
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - a Agressive Winter
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 48851b5f430662b4ab5485ae2e336c87, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

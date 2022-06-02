@@ -13,6 +13,9 @@ public class PlayerData : MonoBehaviour
     public int attack = 5;
     public int speed = 5;
 
+    public int tempAttack = 0;
+    public int tempSpeed = 0;
+
     public int attackMod = 0;
     public int speedMod = 0;
 
@@ -69,6 +72,94 @@ public class PlayerData : MonoBehaviour
     public void DamageTaken(int damage)
     {
         health -= damage;
+        statText.text = "Health: " + health + "\nAttack: " + attack + "\nSpeed : " + speed;
+    }
+
+    public void Buff(int healthVal, int attackVal, int speedVal, Deck.ItemCard cardRef)
+    {
+        playerInventory.GetComponent<Inventory>().RemoveItemFromInventory(cardRef, player);
+        health += healthVal;
+        attack += attackVal;
+        speed += speedVal;
+        tempAttack = attackVal;
+        tempSpeed = speedVal;
+        if (attack > 5)
+        {
+            attackMod = (attack - 5) * 2;
+            if (attackMod > 10)
+            {
+                attackMod = 10;
+            }
+        }
+        else if (attack < 5)
+        {
+            attackMod = -(5 - attack) * 2;
+            if (attackMod < -8)
+            {
+                attackMod = -8;
+            }
+        }
+
+        if (speed > 5)
+        {
+            speedMod = speed - 5;
+            if (speedMod > 5)
+            {
+                speedMod = 5;
+            }
+        }
+        else if (speed < 5)
+        {
+            speedMod = -(5 - speed);
+            if (speedMod < -4)
+            {
+                speedMod = -4;
+            }
+        }
+
+        statText.text = "Health: " + health + "\nAttack: " + attack + "\nSpeed : " + speed;
+    }
+
+    public void BuffUpdate()
+    {
+        attack -= tempAttack;
+        speed -= tempSpeed;
+        tempAttack = 0;
+        tempSpeed = 0;
+        if (attack > 5)
+        {
+            attackMod = (attack - 5) * 2;
+            if (attackMod > 10)
+            {
+                attackMod = 10;
+            }
+        }
+        else if (attack < 5)
+        {
+            attackMod = -(5 - attack) * 2;
+            if (attackMod < -8)
+            {
+                attackMod = -8;
+            }
+        }
+
+        if (speed > 5)
+        {
+            speedMod = speed - 5;
+            if (speedMod > 5)
+            {
+                speedMod = 5;
+            }
+        }
+        else if (speed < 5)
+        {
+            speedMod = -(5 - speed);
+            if (speedMod < -4)
+            {
+                speedMod = -4;
+            }
+        }
+
         statText.text = "Health: " + health + "\nAttack: " + attack + "\nSpeed : " + speed;
     }
 
