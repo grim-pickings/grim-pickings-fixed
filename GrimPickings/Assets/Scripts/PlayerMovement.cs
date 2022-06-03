@@ -38,7 +38,7 @@ public class PlayerMovement : MonoBehaviour
         {
             movement = 1;
         }
-        currentTile.GetComponent<HexScript>().MovementUpdate(movement, this.gameObject, true, 0);
+        StartCoroutine(currentTile.GetComponent<HexScript>().MovementUpdate(movement, this.gameObject, true, 0));
     }
 
     // Function used to find where the player is at when it is called and stores the matching tile as it's currentTile

@@ -5,7 +5,11 @@ using UnityEngine;
 public class GetPlayerData : MonoBehaviour
 {
     public GameObject player;
-    
+    [SerializeField]
+    private Inventory storedInventoryP1;
+    [SerializeField]
+    private Inventory storedInventoryP2;
+
     void Start()
     {
         if (player.name == "Player1")
@@ -26,20 +30,21 @@ public class GetPlayerData : MonoBehaviour
             }
             if (DataStorage.Player1LeftArm != null)
             {
-                this.GetComponent<PlayerData>().StatUpdate(leftArm.bodyPart, leftArm.health, leftArm.attack, leftArm.speed, leftArm.bodyImg, leftArm);
+                this.GetComponent<PlayerData>().StatUpdate("Left " + leftArm.bodyPart, leftArm.health, leftArm.attack, leftArm.speed, leftArm.bodyImg, leftArm);
             }
             if (DataStorage.Player1RightArm != null)
             {
-                this.GetComponent<PlayerData>().StatUpdate(rightArm.bodyPart, rightArm.health, rightArm.attack, rightArm.speed, rightArm.bodyImgAlt, rightArm);
+                this.GetComponent<PlayerData>().StatUpdate("Right " + rightArm.bodyPart, rightArm.health, rightArm.attack, rightArm.speed, rightArm.bodyImgAlt, rightArm);
             }
             if (DataStorage.Player1LeftLeg != null)
             {
-                this.GetComponent<PlayerData>().StatUpdate(leftLeg.bodyPart, leftLeg.health, leftLeg.attack, leftLeg.speed, leftLeg.bodyImg, leftLeg);
+                this.GetComponent<PlayerData>().StatUpdate("Left " + leftLeg.bodyPart, leftLeg.health, leftLeg.attack, leftLeg.speed, leftLeg.bodyImg, leftLeg);
             }
             if (DataStorage.Player1RightLeg != null)
             {
-                this.GetComponent<PlayerData>().StatUpdate(rightLeg.bodyPart, rightLeg.health, rightLeg.attack, rightLeg.speed, rightLeg.bodyImgAlt, rightLeg);
+                this.GetComponent<PlayerData>().StatUpdate("Right " + rightLeg.bodyPart, rightLeg.health, rightLeg.attack, rightLeg.speed, rightLeg.bodyImgAlt, rightLeg);
             }
+            storedInventoryP1.cardsInStock = new List<Deck.Card>();
         }
         if (player.name == "Player2")
         {
@@ -59,20 +64,21 @@ public class GetPlayerData : MonoBehaviour
             }
             if (DataStorage.Player2LeftArm != null)
             {
-                this.GetComponent<PlayerData>().StatUpdate(leftArm.bodyPart, leftArm.health, leftArm.attack, leftArm.speed, leftArm.bodyImg, leftArm);
+                this.GetComponent<PlayerData>().StatUpdate("Left " + leftArm.bodyPart, leftArm.health, leftArm.attack, leftArm.speed, leftArm.bodyImg, leftArm);
             }
             if (DataStorage.Player2RightArm != null)
             {
-                this.GetComponent<PlayerData>().StatUpdate(rightArm.bodyPart, rightArm.health, rightArm.attack, rightArm.speed, rightArm.bodyImgAlt, rightArm);
+                this.GetComponent<PlayerData>().StatUpdate("Right " + rightArm.bodyPart, rightArm.health, rightArm.attack, rightArm.speed, rightArm.bodyImgAlt, rightArm);
             }
             if (DataStorage.Player2LeftLeg != null)
             {
-                this.GetComponent<PlayerData>().StatUpdate(leftLeg.bodyPart, leftLeg.health, leftLeg.attack, leftLeg.speed, leftLeg.bodyImg, leftLeg);
+                this.GetComponent<PlayerData>().StatUpdate("Left " + leftLeg.bodyPart, leftLeg.health, leftLeg.attack, leftLeg.speed, leftLeg.bodyImg, leftLeg);
             }
             if (DataStorage.Player2RightLeg != null)
             {
-                this.GetComponent<PlayerData>().StatUpdate(rightLeg.bodyPart, rightLeg.health, rightLeg.attack, rightLeg.speed, rightLeg.bodyImgAlt, rightLeg);
+                this.GetComponent<PlayerData>().StatUpdate("Right " + rightLeg.bodyPart, rightLeg.health, rightLeg.attack, rightLeg.speed, rightLeg.bodyImgAlt, rightLeg);
             }
+            storedInventoryP2.cardsInStock = new List<Deck.Card>();
         }
     }
 }

@@ -62,9 +62,9 @@ public class HexScript : MonoBehaviour
     }
 
     //Function that updates the grid to turn inner tiles blue to indicate where the player can move
-    public void MovementUpdate(int movement, GameObject player, bool origin, int direction)
+    public IEnumerator MovementUpdate(int movement, GameObject player, bool origin, int direction)
     {
-        if(movement > 0)
+        if (movement > 0)
         {
             for (int i = 0; i < nearHexes.Count; i++)
             {
@@ -88,8 +88,9 @@ public class HexScript : MonoBehaviour
                     ((int)nearHexes[i][1]) == directionRange[2] ||
                     origin == true))
                 {
+                    yield return new WaitForSeconds(0.02f);
                     ((GameObject)nearHexes[i][0]).transform.GetChild(((GameObject)nearHexes[i][0]).transform.childCount - 1).GetComponent<SpriteRenderer>().color = movementColor;
-                    ((GameObject)nearHexes[i][0]).GetComponent<HexScript>().MovementUpdate(movement - 1, player, false, ((int)nearHexes[i][1]));
+                    StartCoroutine(((GameObject)nearHexes[i][0]).GetComponent<HexScript>().MovementUpdate(movement - 1, player, false, ((int)nearHexes[i][1])));
                     if (controller.GetComponent<GameController>() != null)
                     {
                         if (!(controller.GetComponent<GameController>().rangeHexes.Contains((GameObject)nearHexes[i][0])))

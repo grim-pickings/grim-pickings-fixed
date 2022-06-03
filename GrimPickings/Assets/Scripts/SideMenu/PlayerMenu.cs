@@ -33,6 +33,7 @@ public class PlayerMenu : MonoBehaviour
 
     void Update()
     {
+        /*
         // having both hands enter at the same time is unlikely but doable and causes an object reference error, so need to try catch this.
         try
         {
@@ -58,6 +59,7 @@ public class PlayerMenu : MonoBehaviour
                 OpenInventoryMotion(hand);
             }
         }
+        */
     }
 
     private void OpenInventoryMotion(Hand hand)

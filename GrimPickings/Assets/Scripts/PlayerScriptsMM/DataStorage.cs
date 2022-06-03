@@ -22,7 +22,7 @@ public class DataStorage
     public static Deck.Card Player2Head;
     public static Deck.Card Player2Body;
     public static Deck.Card Player2LeftArm;
-    public static Deck.Card Player2RightArm;
+    public static Deck.Card Player2RightArm; 
     public static Deck.Card Player2LeftLeg;
     public static Deck.Card Player2RightLeg;
 
@@ -31,6 +31,7 @@ public class DataStorage
         p1Name = "";
         p1Color = new Color(0, 0, 0, 0);
         player1Inventory = new List<Deck.Card> { };
+        player1ItemInventory = new List<Deck.ItemCard> { };
         Player1Head = null;
         Player1Body = null;
         Player1LeftArm = null;
@@ -41,6 +42,7 @@ public class DataStorage
         p2Name = "";
         p2Color = new Color(0, 0, 0, 0);
         player2Inventory = new List<Deck.Card> { };
+        player2ItemInventory = new List<Deck.ItemCard> { };
         Player2Head = null;
         Player2Body = null;
         Player2LeftArm = null;

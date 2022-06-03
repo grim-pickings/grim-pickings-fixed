@@ -56,7 +56,7 @@ public class DiceScript : MonoBehaviour
         Color diceColor = diceImg.color;
         while (a < 1)
         {
-            a += 0.01f;
+            a += 0.03f;
             diceColor.a = a;
             diceImg.color = diceColor;
             diceText.color = new Color(1f, 1f, 1f, a);
@@ -69,12 +69,12 @@ public class DiceScript : MonoBehaviour
             num = (Random.Range(1, diceNum + 1));
             diceText.text = num.ToString();
             i++;
-            yield return new WaitForSeconds(i * 0.003f);
+            yield return new WaitForSeconds(i * 0.002f);
         }
         yield return new WaitForSeconds(2f);
         while (a > 0)
         {
-            a -= 0.01f;
+            a -= 0.03f;
             diceColor.a = a;
             diceImg.color = diceColor;
             diceText.color = new Color(1f, 1f, 1f, a);

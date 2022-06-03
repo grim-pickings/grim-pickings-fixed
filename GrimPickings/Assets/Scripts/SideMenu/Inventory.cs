@@ -5,7 +5,7 @@ using UnityEngine;
 public class Inventory : MonoBehaviour
 {
     [SerializeField] private GameObject cardTemplate, itemCardTemplate, GameController;
-    private List<Deck.Card> cardsInStock = new List<Deck.Card>();
+    public List<Deck.Card> cardsInStock = new List<Deck.Card>();
     private List<Deck.ItemCard> itemCardsInStock = new List<Deck.ItemCard>();
     [SerializeField] private Sprite defaultSprite;
     [SerializeField] private int cardSpacing = 50;

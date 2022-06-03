@@ -229,7 +229,7 @@ public class GameController : MonoBehaviour
         rollButton.SetActive(false);
         dice.GetComponent<DiceScript>().DiceRoll(8, "move", currentPlayerNum);
         diceRolled = false;
-        yield return new WaitForSeconds(7f);
+        yield return new WaitForSeconds(5f);
         while (a > 0)
         {
             a -= 0.01f;

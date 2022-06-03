@@ -251,7 +251,7 @@ public class GameControllerCombat : MonoBehaviour
             moveDiceRolled = false;
             attackDiceRolled = false;
             passed = false;
-            yield return new WaitForSeconds(7f);
+            yield return new WaitForSeconds(5f);
         }
         else if (attackDiceRolled == true)
         {
@@ -260,7 +260,7 @@ public class GameControllerCombat : MonoBehaviour
             moveDiceRolled = false;
             attackDiceRolled = false;
             passed = false;
-            yield return new WaitForSeconds(7f);
+            yield return new WaitForSeconds(5f);
         }
         while (a > 0)
         {
@@ -624,7 +624,7 @@ public class GameControllerCombat : MonoBehaviour
                 moveDiceRolled = false;
                 attackDiceRolled = false;
                 passed = false;
-                yield return new WaitForSeconds(7f);
+                yield return new WaitForSeconds(5f);
             }
             while (a > 0)
             {
@@ -702,7 +702,7 @@ public class GameControllerCombat : MonoBehaviour
                 }
             }
             targetPlayer.GetComponent<PlayerMovement>().currentTile.GetComponent<HexScript>().type = "";
-            targetPlayer.GetComponent<PlayerMovement>().currentTile.transform.GetChild(currentPlayer.GetComponent<PlayerMovement>().currentTile.transform.childCount - 1).GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0f);
+            targetPlayer.GetComponent<PlayerMovement>().currentTile.transform.GetChild(targetPlayer.GetComponent<PlayerMovement>().currentTile.transform.childCount - 1).GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0f);
             while (targetPlayer.transform.position.x >= Tile.transform.position.x + 0.01f || targetPlayer.transform.position.x <= Tile.transform.position.x - 0.01f ||
             targetPlayer.transform.position.y >= Tile.transform.position.y + 0.01f || targetPlayer.transform.position.y <= Tile.transform.position.y - 0.01f)
             {

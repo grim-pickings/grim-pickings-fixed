@@ -19,6 +19,9 @@ public class PlayerData : MonoBehaviour
     public int attackMod = 0;
     public int speedMod = 0;
 
+    private string attackModString = "+0";
+    private string speedModString = "+0";
+
     public string armSide = "Left";
     public string legSide = "Left";
 
@@ -66,13 +69,13 @@ public class PlayerData : MonoBehaviour
 
     public void Awake()
     {
-        statText.text = "Health: " + health + "\nAttack: " + attack + "\nSpeed : " + speed;
+        statText.text = "Health: " + health + "\nAttack: " + attack + " (" + attackModString + ")" + "\nSpeed : " + speed + " (" + speedModString + ")";
     }
 
     public void DamageTaken(int damage)
     {
         health -= damage;
-        statText.text = "Health: " + health + "\nAttack: " + attack + "\nSpeed : " + speed;
+        statText.text = "Health: " + health + "\nAttack: " + attack + " (" + attackModString + ")" + "\nSpeed : " + speed + " (" + speedModString + ")";
     }
 
     public void Buff(int healthVal, int attackVal, int speedVal, Deck.ItemCard cardRef)
@@ -83,13 +86,14 @@ public class PlayerData : MonoBehaviour
         speed += speedVal;
         tempAttack = attackVal;
         tempSpeed = speedVal;
-        if (attack > 5)
+        if (attack >= 5)
         {
             attackMod = (attack - 5) * 2;
             if (attackMod > 10)
             {
                 attackMod = 10;
             }
+            attackModString = "+" + attackMod;
         }
         else if (attack < 5)
         {
@@ -98,15 +102,17 @@ public class PlayerData : MonoBehaviour
             {
                 attackMod = -8;
             }
+            attackModString = "" + attackMod;
         }
 
-        if (speed > 5)
+        if (speed >= 5)
         {
-            speedMod = speed - 5;
-            if (speedMod > 5)
+            speedMod = (speed - 5) / 2;
+            if (speedMod > 3)
             {
-                speedMod = 5;
+                speedMod = 3;
             }
+            speedModString = "+" + speedMod;
         }
         else if (speed < 5)
         {
@@ -115,9 +121,10 @@ public class PlayerData : MonoBehaviour
             {
                 speedMod = -4;
             }
+            speedModString = "" + speedMod;
         }
 
-        statText.text = "Health: " + health + "\nAttack: " + attack + "\nSpeed : " + speed;
+        statText.text = "Health: " + health + "\nAttack: " + attack + " (" + attackModString + ")" + "\nSpeed : " + speed + " (" + speedModString + ")";
     }
 
     public void BuffUpdate()
@@ -126,13 +133,14 @@ public class PlayerData : MonoBehaviour
         speed -= tempSpeed;
         tempAttack = 0;
         tempSpeed = 0;
-        if (attack > 5)
+        if (attack >= 5)
         {
             attackMod = (attack - 5) * 2;
             if (attackMod > 10)
             {
                 attackMod = 10;
             }
+            attackModString = "+" + attackMod;
         }
         else if (attack < 5)
         {
@@ -141,15 +149,17 @@ public class PlayerData : MonoBehaviour
             {
                 attackMod = -8;
             }
+            attackModString = "" + attackMod;
         }
 
-        if (speed > 5)
+        if (speed >= 5)
         {
-            speedMod = speed - 5;
-            if (speedMod > 5)
+            speedMod = (speed - 5) / 2;
+            if (speedMod > 3)
             {
-                speedMod = 5;
+                speedMod = 3;
             }
+            speedModString = "+" + speedMod;
         }
         else if (speed < 5)
         {
@@ -158,29 +168,15 @@ public class PlayerData : MonoBehaviour
             {
                 speedMod = -4;
             }
+            speedModString = "" + speedMod;
         }
 
-        statText.text = "Health: " + health + "\nAttack: " + attack + "\nSpeed : " + speed;
+        statText.text = "Health: " + health + "\nAttack: " + attack + " (" + attackModString + ")" + "\nSpeed : " + speed + " (" + speedModString + ")";
     }
 
     // update player data and stat label with passed in data. 
     public void StatUpdate(string bodyPart, int healthPart, int attackPart, int speedPart, Sprite imagePart, Deck.Card cardRef, string bodyPartSide = "")
     {
-
-        // for now make it a random choice to apply legs or arms to left or right side. change it later so the player selects a button to set the side.
-        // will need to use bodyPartSide.
-        if(bodyPart == "Leg" || bodyPart == "Arm")
-        {
-            // pick a random number, if 1 Left, if 2 Right.
-            int i = Random.Range(1, 3);
-            if (i == 1)
-            {
-                bodyPart = bodyPart.Insert(0, "Left ");
-            } else
-            {
-                bodyPart = bodyPart.Insert(0, "Right ");
-            }
-        }
         playerInventory.GetComponent<Inventory>().RemoveFromInventory(cardRef, player);
         // switch statement dependent on body part type. 
         switch (bodyPart)
@@ -343,13 +339,14 @@ public class PlayerData : MonoBehaviour
         attack += attackPart;
         speed += speedPart;
 
-        if(attack > 5)
+        if(attack >= 5)
         {
             attackMod = (attack - 5) * 2;
             if(attackMod > 10)
             {
                 attackMod = 10;
             }
+            attackModString = "+" + attackMod;
         }
         else if (attack < 5)
         {
@@ -358,27 +355,42 @@ public class PlayerData : MonoBehaviour
             {
                 attackMod = -8;
             }
+            attackModString = "" + attackMod;
         }
 
-        if (speed > 5)
+        if (speed >= 5)
         {
-            speedMod = speed - 5;
-            if (speedMod > 5)
+            speedMod = (speed - 5) / 2;
+            if (speedMod > 3)
             {
-                speedMod = 5;
+                speedMod = 3;
             }
+            speedModString = "+" + speedMod;
         }
         else if (speed < 5)
         {
             speedMod = -(5 - speed);
-            if (speedMod < -4)
+            if (speedMod < -3)
             {
-                speedMod = -4;
+                speedMod = -3;
             }
+            speedModString = "" + speedMod;
         }
 
-        statText.text = "Health: " + health + "\nAttack: " + attack + "\nSpeed : " + speed;
+        statText.text = "Health: " + health + "\nAttack: " + attack + " (" + attackModString + ")" + "\nSpeed : " + speed + " (" + speedModString + ")";
 
+        Debug.Log("Player 1 Head: " + DataStorage.Player1Head);
+        Debug.Log("Player 1 Body: " + DataStorage.Player1Body);
+        Debug.Log("Player 1 LeftArm: " + DataStorage.Player1LeftArm);
+        Debug.Log("Player 1 RightArm: " + DataStorage.Player1RightArm);
+        Debug.Log("Player 1 LeftLeg: " + DataStorage.Player1LeftLeg);
+        Debug.Log("Player 1 RightLeg: " + DataStorage.Player1RightLeg);
+        Debug.Log("Player 2 Head: " + DataStorage.Player2Head);
+        Debug.Log("Player 2 Body: " + DataStorage.Player2Body);
+        Debug.Log("Player 2 LeftArm: " + DataStorage.Player2LeftArm);
+        Debug.Log("Player 2 RightArm: " + DataStorage.Player2RightArm);
+        Debug.Log("Player 2 LeftLeg: " + DataStorage.Player2LeftLeg);
+        Debug.Log("Player 2 RightLeg: " + DataStorage.Player2RightLeg);
     }
 
     void RemovePart(int removedHP, int removedAttack, int removedSpeed)

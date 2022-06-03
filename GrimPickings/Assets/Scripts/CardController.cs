@@ -17,7 +17,8 @@ public class CardController : MonoBehaviour
     [SerializeField] private PlayerMenu p1Menu;
     [SerializeField] private PlayerMenu p2Menu;
 
-    [SerializeField] private LeapServiceProvider leapController;
+    [SerializeField] private LeapServiceProvider leapControllerP1;
+    [SerializeField] private LeapServiceProvider leapControllerP2;
     private bool handPullMotion = false;
     private bool checkForHandMotion = false;
     private bool checkForMotionOne = false;
@@ -33,23 +34,49 @@ public class CardController : MonoBehaviour
             // if a leap service provider is connected and a hand is being tracked, 
             // get an ID reference to the first entered tracked hand, check for conditions. 
             // if two hands are tracked, just watch for conditions on the first entered hand.
-            if (leapController && leapController.CurrentFrame.Hands.Count == 1)
+            if (leapControllerP1 && leapControllerP1.CurrentFrame.Hands.Count == 1)
             {
-                firstHandID = leapController.CurrentFrame.Hands[0].Id;
-                HandCardPull(leapController.CurrentFrame.Hand(firstHandID));
+                firstHandID = leapControllerP1.CurrentFrame.Hands[0].Id;
+                HandCardPullP1(leapControllerP1.CurrentFrame.Hand(firstHandID));
             }
-            else if (leapController && leapController.CurrentFrame.Hands.Count == 2)
+            else if (leapControllerP1 && leapControllerP1.CurrentFrame.Hands.Count == 2)
             {
-                HandCardPull(leapController.CurrentFrame.Hand(firstHandID));
+                HandCardPullP1(leapControllerP1.CurrentFrame.Hand(firstHandID));
             }
         }
         // if both hands entered at the same time, just track hand 0. when two hands are being tracked, it's the left hand.
         catch (Exception e)
         {
-            if (leapController && leapController.CurrentFrame.Hands.Count > 0)
+            if (leapControllerP1 && leapControllerP1.CurrentFrame.Hands.Count > 0)
             {
-                Hand hand = leapController.CurrentFrame.Hands[0];
-                HandCardPull(hand);
+                Hand hand = leapControllerP1.CurrentFrame.Hands[0];
+                HandCardPullP1(hand);
+            }
+        }
+
+        // having both hands enter at the same time is unlikely but doable and causes an object reference error, so need to try catch this.
+        try
+        {
+            // if a leap service provider is connected and a hand is being tracked, 
+            // get an ID reference to the first entered tracked hand, check for conditions. 
+            // if two hands are tracked, just watch for conditions on the first entered hand.
+            if (leapControllerP2 && leapControllerP2.CurrentFrame.Hands.Count == 1)
+            {
+                firstHandID = leapControllerP2.CurrentFrame.Hands[0].Id;
+                HandCardPullP2(leapControllerP2.CurrentFrame.Hand(firstHandID));
+            }
+            else if (leapControllerP2 && leapControllerP2.CurrentFrame.Hands.Count == 2)
+            {
+                HandCardPullP2(leapControllerP2.CurrentFrame.Hand(firstHandID));
+            }
+        }
+        // if both hands entered at the same time, just track hand 0. when two hands are being tracked, it's the left hand.
+        catch (Exception e)
+        {
+            if (leapControllerP2 && leapControllerP2.CurrentFrame.Hands.Count > 0)
+            {
+                Hand hand = leapControllerP2.CurrentFrame.Hands[0];
+                HandCardPullP2(hand);
             }
         }
     }
@@ -179,42 +206,87 @@ public class CardController : MonoBehaviour
         collect = false;
     }
 
-    private void HandCardPull(Hand hand)
+    private void HandCardPullP1(Hand hand)
     {
-        // don't check when not waiting for hand motion.
-        if (!checkForHandMotion) return;
-
-        // get fingers.
-        Finger thumb = hand.Fingers[0];
-        Finger index = hand.Fingers[1];
-        Finger middle = hand.Fingers[2];
-        Finger ring = hand.Fingers[3];
-        Finger pinky = hand.Fingers[4];
-
-        // check for open hand first (except for thumb).
-        if (index.IsExtended
-            && middle.IsExtended
-            && ring.IsExtended
-            && pinky.IsExtended
-        )
+        if(GameController.GetComponent<GameController>().currentPlayer == player1)
         {
-            checkForMotionOne = true;
+            // don't check when not waiting for hand motion.
+            if (!checkForHandMotion) return;
+
+            // get fingers.
+            Finger thumb = hand.Fingers[0];
+            Finger index = hand.Fingers[1];
+            Finger middle = hand.Fingers[2];
+            Finger ring = hand.Fingers[3];
+            Finger pinky = hand.Fingers[4];
+
+            // check for open hand first (except for thumb).
+            if (index.IsExtended
+                && middle.IsExtended
+                && ring.IsExtended
+                && pinky.IsExtended
+            )
+            {
+                checkForMotionOne = true;
+            }
+
+            // when all fingers except for the thumb are closed. thumb position does not matter.
+            if (!index.IsExtended
+                && !middle.IsExtended
+                && !ring.IsExtended
+                && !pinky.IsExtended
+                && checkForMotionOne
+            )
+            {
+                Debug.Log("hand pull motion called.");
+                // hand is closed.
+                handPullMotion = true;
+                // stop checking for hand motion after card is pulled towards player.
+                checkForHandMotion = false;
+                checkForMotionOne = false;
+            }
         }
+    }
 
-        // when all fingers except for the thumb are closed. thumb position does not matter.
-        if (!index.IsExtended
-            && !middle.IsExtended
-            && !ring.IsExtended
-            && !pinky.IsExtended
-            && checkForMotionOne
-        )
+    private void HandCardPullP2(Hand hand)
+    {
+        if (GameController.GetComponent<GameController>().currentPlayer == player2)
         {
-            Debug.Log("hand pull motion called.");
-            // hand is closed.
-            handPullMotion = true;
-            // stop checking for hand motion after card is pulled towards player.
-            checkForHandMotion = false;
-            checkForMotionOne = false;
+            // don't check when not waiting for hand motion.
+            if (!checkForHandMotion) return;
+
+            // get fingers.
+            Finger thumb = hand.Fingers[0];
+            Finger index = hand.Fingers[1];
+            Finger middle = hand.Fingers[2];
+            Finger ring = hand.Fingers[3];
+            Finger pinky = hand.Fingers[4];
+
+            // check for open hand first (except for thumb).
+            if (index.IsExtended
+                && middle.IsExtended
+                && ring.IsExtended
+                && pinky.IsExtended
+            )
+            {
+                checkForMotionOne = true;
+            }
+
+            // when all fingers except for the thumb are closed. thumb position does not matter.
+            if (!index.IsExtended
+                && !middle.IsExtended
+                && !ring.IsExtended
+                && !pinky.IsExtended
+                && checkForMotionOne
+            )
+            {
+                Debug.Log("hand pull motion called.");
+                // hand is closed.
+                handPullMotion = true;
+                // stop checking for hand motion after card is pulled towards player.
+                checkForHandMotion = false;
+                checkForMotionOne = false;
+            }
         }
     }
 }

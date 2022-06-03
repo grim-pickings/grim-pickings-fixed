@@ -225,8 +225,18 @@ public class Deck : MonoBehaviour
     {
         itemsCardDeck = new List<ItemCard>() {
             new ItemCard("<color=#83D24B>Health Vial", "<color=#83D24B>+10 Health", 10, 0, 0, HealthCardBG),
+            new ItemCard("<color=#83D24B>Health Vial", "<color=#83D24B>+10 Health", 10, 0, 0, HealthCardBG),
+            new ItemCard("<color=#83D24B>Health Vial", "<color=#83D24B>+10 Health", 10, 0, 0, HealthCardBG),
+            new ItemCard("<color=#83D24B>Health Vial", "<color=#83D24B>+10 Health", 10, 0, 0, HealthCardBG),
+            new ItemCard("<color=#DA493D>Strength Vial", "<color=#DA493D>+2 Attack\nfor 1 turn", 0, 2, 0, AttackCardBG),
+            new ItemCard("<color=#DA493D>Strength Vial", "<color=#DA493D>+2 Attack\nfor 1 turn", 0, 2, 0, AttackCardBG),
+            new ItemCard("<color=#DA493D>Strength Vial", "<color=#DA493D>+2 Attack\nfor 1 turn", 0, 2, 0, AttackCardBG),
             new ItemCard("<color=#DA493D>Strength Vial", "<color=#DA493D>+2 Attack\nfor 1 turn", 0, 2, 0, AttackCardBG),
             new ItemCard("<color=#4261DC>Speed Vial", "<color=#4261DC>+2 Speed\nfor 1 turn", 0, 0, 2, SpeedCardBG),
+            new ItemCard("<color=#4261DC>Speed Vial", "<color=#4261DC>+2 Speed\nfor 1 turn", 0, 0, 2, SpeedCardBG),
+            new ItemCard("<color=#4261DC>Speed Vial", "<color=#4261DC>+2 Speed\nfor 1 turn", 0, 0, 2, SpeedCardBG),
+            new ItemCard("<color=#4261DC>Speed Vial", "<color=#4261DC>+2 Speed\nfor 1 turn", 0, 0, 2, SpeedCardBG),
+            new ItemCard("<color=#DA493D>M<color=#7359AB>u<color=#4261DC>l<color=#83D24B>t<color=#DD8D2B>i<color=#DA493D>-<color=#7359AB>V<color=#4261DC>i<color=#83D24B>a<color=#DD8D2B>l", "<color=#83D24B>+10 Health,\n<color=#DA493D>+2 Attack\nfor 1 turn,\n<color=#4261DC>+2 Speed\nfor 1 turn", 10, 2, 2, MultiCardBG),
             new ItemCard("<color=#DA493D>M<color=#7359AB>u<color=#4261DC>l<color=#83D24B>t<color=#DD8D2B>i<color=#DA493D>-<color=#7359AB>V<color=#4261DC>i<color=#83D24B>a<color=#DD8D2B>l", "<color=#83D24B>+10 Health,\n<color=#DA493D>+2 Attack\nfor 1 turn,\n<color=#4261DC>+2 Speed\nfor 1 turn", 10, 2, 2, MultiCardBG),
         };
     }
